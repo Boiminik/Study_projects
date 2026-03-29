@@ -1,0 +1,38 @@
+spring:
+
+  flyway:
+
+    customer-db:
+      url: jdbc:postgresql://localhost:30001/customer_db
+      user: postgres
+      password: postgres
+      schemas: public
+      locations: classpath:db/migration/customer_db
+
+    station-1-db:
+      url: jdbc:postgresql://localhost:30011/station_1_db
+      user: postgres
+      password: postgres
+      schemas: public
+      locations: classpath:db/migration/station_1_db
+
+    station-2-db:
+      url: jdbc:postgresql://localhost:30012/station_2_db
+      user: postgres
+      password: postgres
+      schemas: public
+      locations: classpath:db/migration/station_2_db
+
+    station-3-db:
+      url: jdbc:postgresql://localhost:30013/station_3_db
+      user: postgres
+      password: postgres
+      schemas: public
+      locations: classpath:db/migration/station_3_db
+
+  rabbitmq:
+    host: localhost
+    port: 30003
+    username: guest
+    password: guest
+    virtual-host: /

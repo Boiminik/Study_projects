@@ -1,0 +1,14 @@
+@startuml
+    set namespaceSeparator none
+    hide circle
+    hide empty fields
+    hide empty methods
+
+    Workout --> java.lang
+
+    ' Package links
+    class "Workout" [[Workout/package-summary.html]] {
+    }
+
+    center footer UMLDoclet 2.0.12, PlantUML 1.2020.16
+@enduml

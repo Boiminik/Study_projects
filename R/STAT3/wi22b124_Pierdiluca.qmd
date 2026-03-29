@@ -1,0 +1,81 @@
+---
+title: "Uebung_T3"
+author: "wi22b124"
+format: pdf
+editor: visual
+---
+
+# Geburten
+
+Eine Stichprobe bestehend aus der Beobachtung von Geburten, welche beim Standesamt angemeldet wurden, zeigt den Geburtsmonat und das Geschlecht von 99 Neugeborenen. Hierbei wurden die Monate 1 - 12 (Jänner - Dezember) festgehalten und die Geschlechter mit Bub und Mädchen unterteilt. Untersucht werden soll, ob die Geburten über die 12 Monate gleichverteilt sind und wie die Tagesanzahl je Monat berücksichtigt werden kann.
+
+## Datenmanagement
+
+Die Daten wurden zuerst mit einem read.table() eingelesen und direkt im Anschluss absolut gesetzt mit dem table() befehl:
+
+```{r}
+birthdays <- read.table(file = "./wi22b124.txt")
+birthdays_abs = table(birthdays)
+```
+
+### Table
+
+Die eingelesenen Daten werden über einen Table optisch dargestellt und mit print() ausgegeben:
+
+```{r}
+print(birthdays_abs)
+```
+
+### Visualisierung
+
+Wir möchten nun die Daten visualisieren und diese dann analysieren um herauszufinden, ob sich Auffälligkeiten finden lassen:
+
+```{r}
+boys <- subset(birthdays, Geschlecht == "Bub")
+girls <- subset(birthdays, Geschlecht == "Mädchen")
+
+hist(boys$Monat, breaks = 12, main = "Anzahl der Geburten von Buben pro Monat", xlab = "Monat", ylab = "Anzahl der Geburten")
+abline(h= mean(table(boys$Monat)), col="red")
+
+hist(girls$Monat, breaks = 12, main = "Anzahl der Geburten von Mädchen pro Monat", xlab = "Monat", ylab = "Anzahl der Geburten")
+abline(h= mean(table(girls$Monat)), col="red")
+
+hist(birthdays$Monat, breaks = 12, main = "Anzahl der Geburten von Buben und Mädchen pro Monat", xlab = "Monat", ylab = "Anzahl der Geburten")
+
+```
+
+Die durchschnittlichen Geburten von Buben pro Monat ist geringer als die anzahl der durchschnittlichen geborenen Mädchen pro Monat. Man erkennt zudem, dass in den Monaten August und September nur jeweils eine Geburt zu verzeichnen war, Während bei den Mädchen der geringste Monat März war, mit zwei Geburten.
+
+
+## Gleichverteilt?
+
+Sind die Geburten über die 12 Monate gleichverteilt (10%-Signifikanzniveau)? Um dies herauszufinden wird ein $\chi^2$-Test mit dem Table gemacht:
+
+```{r}
+chisq.test(birthdays_abs)
+```
+
+Der $\chi^2$-Test gibt den P-Wert der Daten aus. Dieser Beträgt 0.1079, das Signifikanzniveau hingegen beträgt 0.1. Da der P-Wert um etwa 0.0079 über dem Signifikanzniveau liegt, kann die Nullhypothese nicht bewiesen werden. Es gibt also nicht genug Beweise, die sagen, dass die Geburten über 12 Monate nicht gleichverteilt sind.
+
+## Tagesanzahl berücksichtigen
+
+Wie kann man berücksichtigen, dass nicht alle Monate gleich viele Tage haben? Um dies zu tun, wird vorerst eine variable mit allen Tagen eines jeden Monats erstellt. Dann dividieren wir unsere originale tabelle durch unsere neue variable um die proportionale Gewichtung jedes Monats angemessen zu verteilen.
+
+```{r}
+days_per_month <- c(31,28,31,30,31,30,31,31,30,31,30,31)
+weighted_birthdays <- birthdays_abs / days_per_month
+```
+
+### $\chi^2$-Test
+
+Mit unserer neuen proportional gewichteten Tabelle wird nun erneut der $\chi^2$-Test durchgeführt:
+
+```{r}
+chisq.test(weighted_birthdays)
+```
+
+Der P-Wert liegt nun genau bei 1 und ist somit wie zuvor höher als das Signifikanzniveau. Daraus lässt sich schließen, dass erneut die Nullhypothese nicht bewiesen werden kann, somit nimmt die berücksichtigung der Tagesanzahl je Monat keinen Einfluss auf das Ergebnis.
+
+## Zusammenfassung
+
+Die Aufgabe bestand darin, die Geburtenmonate nach Geschlecht aufzuwerten und auf ihre Verteilung zu prüfen. Diese Verteilung hat jedoch ergeben, dass man nicht eindeutig eine Gleichverteilung bestimmen kann, selbst wenn man die Tagesanzahl von jedem einzelnen Monat berücksichtigt.

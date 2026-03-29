@@ -1,0 +1,24 @@
+@startuml
+    set namespaceSeparator none
+    hide empty fields
+    hide empty methods
+
+    class "<size:14>BasicWorkout\n<size:10>Workout" as Workout.BasicWorkout [[BasicWorkout.html]] {
+        #duration: int
+        #intensity: int
+        #energy: int
+        #date: Date
+        #description: String
+        +BasicWorkout(Date, int)
+        +BasicWorkout(Date, int, int)
+        +BasicWorkout(Date, int, int, int)
+        +BasicWorkout(Date, int, int, int, String)
+        +BasicWorkout(BasicWorkout)
+        +getDescription(): String
+        +getEnergy(): int
+        +getIntensityString(): String
+        +getIntensity(): int
+    }
+
+    center footer UMLDoclet 2.0.12, PlantUML 1.2020.16
+@enduml

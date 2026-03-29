@@ -1,0 +1,15 @@
+@startuml
+    set namespaceSeparator none
+    hide empty fields
+    hide empty methods
+
+    class "<size:14>Main\n<size:10>Workout" as Workout.Main [[Main.html]] {
+        {static} +main(String[]): void
+        {static} -meanIntensity(BasicWorkout[]): double
+        {static} +totalEnergy(BasicWorkout[]): int
+        {static} +print(BasicWorkout[]): void
+        {static} +getDemoData(): BasicWorkout[]
+    }
+
+    center footer UMLDoclet 2.0.12, PlantUML 1.2020.16
+@enduml

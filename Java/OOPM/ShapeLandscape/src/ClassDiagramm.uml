@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement />
+  <nodes>
+    <node x="0.0" y="1494.0">apps.RectangleDemo</node>
+    <node x="427.95625" y="1201.0">entities.Circle</node>
+    <node x="518.25" y="1494.0">apps.ShapeDemo</node>
+    <node x="337.49999999999994" y="506.0">entities.Shape</node>
+    <node x="256.99999999999994" y="0.0">entities.Color</node>
+    <node x="239.95625" y="1168.0">entities.Rectangle</node>
+    <node x="270.25" y="1505.0">apps.SimpleShapesDemo</node>
+    <node x="138.49999999999994" y="770.5">apps.ColorDemo</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="entities.Rectangle" target="entities.Shape" relationship="GENERALIZATION">
+      <point x="0.0" y="-117.0" />
+      <point x="323.95625" y="1146.0" />
+      <point x="431.49999999999994" y="1146.0" />
+      <point x="0.0" y="304.0" />
+    </edge>
+    <edge source="entities.Circle" target="entities.Shape" relationship="GENERALIZATION">
+      <point x="-5.6843418860808015E-14" y="-84.0" />
+      <point x="511.95624999999995" y="1146.0" />
+      <point x="431.49999999999994" y="1146.0" />
+      <point x="0.0" y="304.0" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic" zoom="0.4721148536720044" showDependencies="true" x="888.5000000000001" y="895.5" />
+  <SelectedNodes />
+  <Categories>
+    <Category>Constructors</Category>
+    <Category>Fields</Category>
+    <Category>Methods</Category>
+  </Categories>
+  <SCOPE>Project Files</SCOPE>
+  <VISIBILITY>private</VISIBILITY>
+</Diagram>
+

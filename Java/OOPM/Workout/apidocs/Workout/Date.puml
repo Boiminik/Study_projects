@@ -1,0 +1,44 @@
+@startuml
+    set namespaceSeparator none
+    hide empty fields
+    hide empty methods
+
+    class "<size:14>Date\n<size:10>Workout" as Workout.Date [[Date.html]] {
+        -y: int
+        -m: int
+        -d: int
+        +Date(int, int, int)
+        +Date(Date)
+        +Date()
+        +getYear(): int
+        +getDay(): int
+        +getMonth(): int
+        +isLeap(): boolean
+        +weekday(): int
+        +dateString(): String
+        -numberEnding(): String
+        -monthName(int): String
+        -dayName(int): String
+        +addDay(int): void
+        +addMonth(int): void
+        +addYear(int): void
+        {static} +julianDayNumber(int, int, int): int
+        +julianDayNumber(): int
+        {static} +lil2jul(int): int
+        {static} +jul2lil(int): int
+        +lilianDayNumber(): int
+        {static} +lilianDayNumber(int, int, int): int
+        +setJulian(int): void
+        +numericString(): String
+        +compareTo(Date): int
+        +scan(): boolean
+    }
+
+    interface "<size:14>Comparable\n<size:10>java.lang" as java.lang.Comparable<Date> {
+        {abstract} +compareTo(Date): int
+    }
+
+    java.lang.Comparable <|.. Workout.Date
+
+    center footer UMLDoclet 2.0.12, PlantUML 1.2020.16
+@enduml

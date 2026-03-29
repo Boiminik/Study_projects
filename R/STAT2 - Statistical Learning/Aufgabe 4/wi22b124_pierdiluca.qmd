@@ -1,0 +1,173 @@
+---
+title: "T4_Ratenzahlung"
+author: "wi22b124"
+format: pdf
+editor: visual
+---
+
+## Ausgangssituation
+
+Ein Hardware-Onlineshop bietet seinen KundInnen bei höherpreisigen Produkten die Möglichkeit, eine Ratenzahlung zu vereinbaren, ohne dass sich der Gesamtpreis dadurch erhöht. Zudem ist die Laufzeit der Ratenzahlung flexibel wählbar (z. B. 9, 12, 18 Monate etc.). Dazu müssen diejenigen, die diese Möglichkeit in Anspruch nehmen, aber ein Formular ausfüllen, in dem sie einige zusätzliche Informationen angeben, z. B. ob sie weitere Kredite oder Ratenzahlungen bei anderen Banken oder Firmen bedienen müssen. Außerdem kann noch vereinbart werden, ob es bei einem Zahlungsausfall des/der KreditnehmerIn eine/n Bürgen/Bürgin bzw. MitschuldnerIn gibt, der/die dann die Zahlungen übernimmt.
+
+kredit: (0...nein, 1...ja) weitkred: (1...ja, 2...nein) buerge: (1...ja, 2...nein)
+
+## Datenmanagement
+
+Die daten wurden mit `read.table()` eingelesen:
+
+```{r}
+raten <- read.table("./wi22b124.txt", sep="|", head=TRUE)
+summary(raten)
+```
+
+Einige Datensätze wurden mit NA belegt, diese gilt es zu entfernen:
+
+```{r}
+any(is.na(raten))
+cc = complete.cases(raten)
+subraten = subset(raten, cc)
+summary(subraten)
+```
+
+So sehen die Werten jetzt aus:
+
+```{r}
+head(subraten)
+```
+
+Wir legen die Werte als Faktoren an und Codieren sie mit den labels "Ja" und "Nein":
+
+```{r}
+subraten$kredit = factor(subraten$kredit, labels =c("Nein", "Ja"))
+subraten$weitkred = factor(subraten$weitkred, labels =c("Ja", "Nein"))
+subraten$buerge = factor(subraten$buerge, labels =c("Ja", "Nein"))
+```
+
+Nun zum Vergleich: die Daten mit den neuen Labels:
+
+```{r}
+head(subraten)
+```
+
+Wenn wir die beiden `head(subraten)` vergleichen, kann man sehen, dass die Werte richtig erkannt werden.
+
+## Absolute Häufigkeiten
+
+```{r}
+tab1 <- with(subraten, table(weitkred, kredit))
+mar.tab1 <- addmargins(tab1)
+mar.tab1
+```
+
+Von den Insgesamt 139 Kunden, die einen Kredit zurückgezahlt haben, haben nur 25 Kunden einen weiteren Kredit, das sind knapp 18% der rückzahlenden Kunden. Auf der anderen Seite, haben von den 59 Kunden die einen unbezahlten Kredit haben, 13 Kunden einen weiteren Kredit, das sind etwa 22%. Auf den ersten Blick gibt es also keinen starken Zusammenhang.Es gibt insgesamt 38 Kunden die einen weiteren Kredit besitzen.
+
+```{r}
+tab1 <- with(subraten, table(buerge, kredit))
+mar.tab1 <- addmargins(tab1)
+mar.tab1
+```
+
+Von den Insgesamt 139 Kunden, die einen Kredit zurückgezahlt haben, haben nur 10 Kunden einen weiteren Schuldner angegeben, das sind knapp über 7% der rückzahlenden Kunden. Auf der anderen Seite, haben von den 59 Kunden die einen unbezahlten Kredit haben, 2 Kunden einen weiteren Schuldner angegeben, das sind etwas unter 3,4%. Auf den ersten Blick gibt es hier also auch keinen starken Zusammenhang.Es gibt insgesamt 12 Kunden die einen weiteren Schuldner angegeben haben.
+
+## Bedingte relative Häufigkeiten
+
+### Einfluss der einzelnen Prädikatoren
+
+Zuerst sehen wir uns an, wie die Art des Kredits die Rückzahlung bewertet
+
+```{r}
+spineplot(kredit ~ weitkred, data = subraten)
+```
+
+Wie bereits vorhin erkannt, gibt es hier keine großen Unterschiede bei den Rückzahlungen, beide Werte sind etwa gleichgroß. Wenn ein weiterer Kredit aufgenommen wird, sinkt die Rückzahlungsquote um etwa 5%.
+
+```{r}
+spineplot(kredit ~ buerge, data = subraten)
+```
+
+Anders als beim weiteren Kredit, steigt die Rückzahlungsquote sobald ein Bürge mit dazukommt. Der Anstieg liegt hier bei etwa 10%
+
+##Gemeinsamer Einfluss beider Prädiktoren
+
+Um zu überprüfen, ob die in unserem Datensatz befindlichen kategorialen Prädiktoren *Weitkred* und *Buerge* einen gemeinsamen Einfluss auf die Schwere der Bugs ausüben, können wir einen `Doubledecker-Plot` verwenden. Dazu berechnen wir zuerst die relativen Häufigkeiten von *kredit*, gegeben *weitkred* und *buerge*:
+
+```{r}
+tab3 <- with(subraten, table(buerge, kredit, weitkred))
+prop.table(tab3, margin = c(1, 3))
+```
+
+Dargestellt in einem `Doubledecker-Plot`:
+
+```{r}
+library(vcd)
+doubledecker(kredit ~ weitkred + buerge, data = subraten)
+```
+
+Den niedrigsten Anteil an Rückzahlungen scheint es zu geben, wenn sowohl ein Bürge als auch ein weiterer Kredit vorhanden sind. Dies scheint zwar im Kontext nicht logisch, jedoch gilt zu erwähnen, dass der Balken sehr schmal ist, und damit sehr wenig Datensätze beinhaltet. Wenn ein Bürge vorhanden ist, aber kein weiterer Kredit, ist der Rückzahlungsanteil am höchsten. Die breite der Balken reiht sich wie folgt: kein weiterer Kredit und ohne Bürge ist am breitesten, bedeutet, die meisten Kunden haben keine Absicherung/weiteren Kredite, auf Platz zwei sind dann Kunden die zwar einen weiteren Kredit haben, aber keinen Bürgen.
+
+##Klassifikation mit Naïve Bayes Um die Rückzahlungsquote neuer Kredite vorherzusagen, wird Naïve Bayes als Klassifkationsmethode verwendet. Als Prädiktoren dienen dabei die Variablen weitkred und buerge. Um die Modellgüte beurteilen zu können, teilen wir die Daten zunächst in Trainings- und Testdatensatz:
+
+```{r}
+library(e1071)
+set.seed(1)
+n <- nrow(subraten)
+testind <- sort(sample(nrow(subraten), size = trunc(n * 1/3)))
+```
+
+Anschließend wird das Modell an die Trainingsdaten angepasst:
+
+```{r}
+model <- naiveBayes(kredit ~ weitkred + buerge,
+                    data = subraten[-testind, ])
+model
+```
+
+Die A-priori-Wahrscheinlichkeiten (wenn wir nichts über die Weiteren Kredite und Bürgen wissen) betragen also 27% für keine Rückzahlung und 73% für Rückzahlungen. Außerdem sind im Output noch die bedingten Wahrscheinlichkeiten angegeben, die zur Berechnung der interessierenden A-posterioriWahrscheinlichkeiten (Einteilung der Rückzahlungen bedingt auf *weitkred* und *buerge*) verwendet werden. Mit diesem Modell sagen wir nun für die Beobachtungen im Testdatensatz die Tilgung der aufgetretenen Kredite voraus:
+
+```{r}
+pred <- predict(model, subraten[testind, ])
+```
+
+##Performance-Evaluierung Wir ermitteln die Wahrheitsmatrix, d. h., wir stellen die vorhergesagten Werte den tatsächlichen gegenüber und berechnen einige darauf basierende Performance-Maße:
+
+```{r}
+library(caret)
+set.seed(1)
+confusionMatrix(pred, ref = subraten$kredit[testind],
+                mode = "prec_recall")
+
+```
+
+In der Hauptdiagonale befinden sich die korrekt klassifizierten Objekte, abseits der Hauptdiagonale die falsch klassifizierten. So stellen wir fest, dass 42 Objekte korrekt klassifiziert wurden, während 24 inkorrekt klassifiziert wurden. Die *Accuracy* (Anteil korrekt klassifizierter Objekte) beträgt somit 64%, das zugehörige Konfidenzintervall (51% - 75%). Die Nichtinformationsrate (A-priori-Wahrscheinlichkeit von nicht Rückzahlungen) beträgt 64%, genauso hoch wie die Accuracy. Die Kenntnis von Buerge und Weitkred bringt also keinen Mehrwert bei der Vorhersage der Rückzahlung eines Kredites (gegenüber der vorab bekannten Verteilung von kredit). Der *Generalisierungsfehler* (Anteil falsch klassifizierter Objekte) beträgt 36%. Die *Wiederfindungsrate* (Anteil korrekt klassifizierter Objekte aus allen Beobachtungen) für nicht bezahlte Kredite beträgt 0%. Keine der nicht getilgten Kredite wurde erkannt. Die Trefferquote (Anteil korrekt klassifizierter Objekte aus allen Vorhersagen) für normale Bugs beträgt ebenso 0%. Keine der Vorhersagen von nicht gezahlten Krediten ist demnach Korrekt. F1, das harmonische Mittel aus Wiederfindungsrate und Trefferquote, beträgt NA.
+
+```{r}
+set.seed(1)
+confusionMatrix(pred, ref = subraten$kredit[testind],
+mode = "prec_recall", positive = "Ja")
+```
+
+Die Vorhersageperformance für die Kategorie nein würde viel schlechter als ausfallen als jene für ja: Precision bei 64% Recall bei 100% F1 bei 78%, Detection Rate bei 63% Sind deutlich höher als bei nein während accuracy, confidence interval und no information rate gleichbleibend sind. Aufgrund der kleinen Stichprobe ermitteln wir den Generalisierungsfehler zusätzlich mittels 10-facher Kreuzvalidierung, die wir zwanzigmal durchführen:
+
+```{r}
+cv.err <- replicate(20, tune(naiveBayes, kredit ~ weitkred + buerge,
+data = subraten)$best.performance)
+summary(cv.err)
+
+```
+
+Der Generalisierungsfehler beträgt im Mittel 29,81%, mit möglichen Abweichungen von ca. ±1%.
+
+##Vorhersage
+
+Obgleich sich das Modell als unbrauchbar herausgestellt hat, wird zu Demonstrationszwecken die Vorhersage wie gefordert für einen Kreditkunden, der zwar einen weiteren Kredit hat, aber keinen Bürgen:
+
+```{r}
+newdata = data.frame(weitkred = "Ja", buerge = "nein")
+predict(model, newdata, type = "raw")
+```
+
+```{r}
+predict(model, newdata)
+```
+
+Die Wahrscheinlichkeit für die Rückzahlung ja beträgt 64%, für nein dementsprechend 36%. Die vorhergesagte Kategorie lautet daher ja.

@@ -1,0 +1,213 @@
+---
+title: "T5_Performance-Evaluierung"
+author: "wi22b124"
+format: pdf
+editor: visual
+---
+
+# Ausgangssituation
+
+Eine Zufallsstichprobe von Studierenden der FH Technikum Wien ist im Datenfile gegeben. Alle Studierenden hatten sowohl Zugriff auf ein Auto als auch vertretbare Fahrzeiten mit öffentlichen Verkehrsmitteln. Neben der gewählten Verkehrsalternative sind drei weitere, möglicherweise (mit-)bestimmende Variablen gegeben.
+
+-   mode.......Verwendetes Verkehrsmittel (0...Auto, 1...öffentliche Verkehrsmittel)
+-   alter......Alter der Person (in Jahren)
+-   sex........Geschlecht (0...männlich, 1...weiblich)
+-   dist.......Distanz zwischen Wohnung und FH Technikum (in km)
+
+# Datenmanagement
+
+Die Daten werden mit `read.table()` eingelesen:
+
+```{r}
+daten <- read.table("./wi22b124.txt", header = TRUE, sep = " ")
+head(daten)
+```
+
+```{r}
+nrow(daten)
+```
+
+Der Datensammlung umfasst 80 Datensätze.
+
+Jetzt suchen wir nach fehlerhaften Datensätzen:
+
+```{r}
+summary(daten)
+idx <- complete.cases(daten)
+table(idx)
+daten <- subset(daten, idx)
+dim(daten)
+```
+
+Es wurde 2 NA's gefunden und von dem Datensatz bereinigt.
+
+Wir wandeln die Datensätze für *mode* und *sex* in faktoren um und klassifizieren sie als "Auto" & "öffentl. Verkehr" und als "männlich" & "weiblich":
+
+```{r}
+daten$mode <- factor(daten$mode, labels = c("Auto", "Öffentl. Verkehr"))
+daten$sex <- factor(daten$sex, labels = c("männlich", "weiblich"))
+```
+
+# Visualisierung:
+
+## Einfluss der einzelnen Prädiktoren
+
+### Geschlecht
+
+Zuerst betrachten wir den Einfluss vom `Geschlecht` auf die `Transportationsart`:
+
+```{r, fig.align = "center", out.width="0.7\\textwidth"}
+spineplot(mode ~ sex, data = daten)
+```
+
+Unter den eingetragenen StudentInnen nutzen etwa 30% der männlichen Befragten öffentliche Verkehrsmittel, 70% nutzen ihr Auto. Weibliche StudentInnen nutzen etwa 40% lieber öffentliche Verkehrsmittel als die 60% die ihr Auto nutzen. Das Geschlecht scheint keinen starken Einfluss auf die Wahl des Transportmittels zu haben.
+
+### Alter
+
+Als nächstes betrachten wir, den Einfluss vom `Alter` auf die `Transportationsart`:
+
+```{r, fig.align = "center", out.width="0.7\\textwidth"}
+# Hinweis: eventuell breaks anpassen
+spineplot(mode ~ alter, data = daten)
+```
+
+15 - 20 Jährige StudentInnen nutzen mit der der höchsten Wahrscheinlichkeit von etwa 60% öffentliche Verkehrsmittel. 30-35 und 55-60 Jährige nutzen mit nur etwa 20% die öffentlichen Verkehrsmittel. Von 15 - 35 Jährigen ist ein Abwärtstrend erkennbar, bei dem immer mehr StudentInnen das Auto bevorzugen. 35-45 steigt wieder, wobei 45-50 zu 100% das Auto bevorzugt, ebenso wie 60-65. Anhand einiger Trends erkennt man, dass das Alter wohl einen geringen Einfluss auf die Wahl des Transportmittels hat.
+
+### Distanz
+
+Zuletzt betrachten wir, wie die Distanz zur FH, die Art der Transportation beeinflusst:
+
+```{r, fig.align = "center", out.width="0.7\\textwidth"}
+# Hinweis: eventuell breaks anpassen
+spineplot(mode ~ dist, data = daten)
+```
+
+StudentInnen die weniger als 1 km von der FH wohnen, nutzen zu 100% öffentliche Verkehrsmittel, während Befragte, welche über 40 km von der FH wohnen, zu 100% das Auto benutzen. Ansonsten erkennt man, dass die StudentInnen, mit einer Distanz von 10-15 km die zweit höchste Wahrscheinlichkeit für öffentliche Verkehrsmittel mit knapp 50% haben. Die Gruppe, die das Auto am zweit häufigsten wählt, wohnt etwa 15-20 km weit weg. In dem Graphen sind keine besonderen Trends zu erkennen, und es scheint als würde die Distanz nicht besonders viel Einfluss auf die Wahl des Verkehrsmittels haben.
+
+## Gemeinsamer Einfluss zweier Prädiktoren
+
+### Geschlecht & Alter
+
+```{r, fig.align = "center", fig.height = 5, fig.width = 10, out.width="0.9\\textwidth"}
+# Hinweis: eventuell breaks anpassen
+par(mfrow = c(1, 2))
+spineplot(mode ~ alter, data = subset(daten, sex == "weiblich"), main = "F")
+spineplot(mode ~ alter, data = subset(daten, sex == "männlich"), main = "M")
+par(mfrow = c(1, 1))
+```
+
+Man erkennt, dass Frauen unter zwanzig die Wahl des Autos vermeiden, während Männer unter zwanzig zu über 60% das Auto bevorzugen. 20-30 Jährige scheinen sich im Durchschnitt nicht anhand des Geschlechts zu unterscheiden. Ebenso für 30-40 jährige. Bei den 40-50 Jährigen erkennt man dann wieder einen Unterschied, da hier die Männer mit höherer Prozentzahl erneut das Auto wählen. Anhand diesem Gemeinsam Einfluss kann man erkennen, dass das Alter und das Geschlecht einen hohen Einfluss auf die Wahl des Verkehrsmittels hat.
+
+### Geschlecht & Distanz
+
+```{r, fig.align = "center", fig.height = 5, fig.width = 10, out.width="0.9\\textwidth"}
+# Hinweis: eventuell breaks anpassen
+par(mfrow = c(1, 2))
+spineplot(mode ~ dist, data = subset(daten, sex == "weiblich"), main = "F")
+spineplot(mode ~ dist, data = subset(daten, sex == "männlich"), main = "M")
+par(mfrow = c(1, 1))
+```
+
+Bei den Frauen erkennt man einen eindeutigen Anstieg an Autonutzern je höher die Distanz ist. Dieser Anstieg verläuft über den ganzen Graphen. Während bei den Männern die Entscheidung hier mehr zufällig erscheint.
+
+### Distanz & Alter
+
+```{r, fig.align = "center", out.width="0.9\\textwidth"}
+set.seed(1)
+# Hinweis: jitter() versetzt die Punkte zufällig horizontal bzw. vertikal, um
+# Overplotting zu minimieren:
+plot(jitter(alter) ~ jitter(dist), data = daten, col = mode,
+     main = "Gewähltes Verkehrsmittel in Abhängigkeit \nvon Distanz und Alter",
+     sub = paste0("N=", nrow(daten)), pch = 16)
+legend("topright", legend = levels(daten$mode), col = 1:2, pch = 16)
+```
+
+In der Grafik erkennt man, dass je nidriger die Distanz ist und je geringer das Alter, desto höher ist die Wahrscheinlichkeit ein öffentliches Verkehrsmittel zu wählen. Jedoch ist es nicht so eindeutig, da sich in diesem Rahmen auch einige Auto Datensätze befinden.
+
+# Klassifikation
+
+## Unterteilung in Trainings- und Testdaten
+
+1/3 der Daten werden als Sample in die Testdaten gegeben:
+
+```{r}
+set.seed(1)
+n <- nrow(daten)
+testind <- sort(sample(nrow(daten), size = trunc(n * 1/3)))
+```
+
+## Klassifikation mit $k$-NN
+
+### Bestimmung von $k$
+
+```{r}
+library(e1071)
+set.seed(1)
+best.k <- replicate(30, tune.gknn(mode ~ sex + alter + dist, 
+                                  data = daten, k = 1:5)$best.parameters$k)
+table(best.k)
+# Hinweis: Folgende Funktion dient der Extraktion des verwendeten k:
+Mode <- function(x) {
+  ux <- unique(x)
+  ux[which.max(tabulate(match(x, ux)))]
+}
+k.used <- Mode(best.k)
+```
+
+In 27 von 30 wurde `k=3` am Besten gewählt. Somit verwenden wir diesen Wert.
+
+```{r}
+knn.mod <- gknn(mode ~ sex + alter + dist, 
+                data = daten[-testind, ], k = k.used)
+knn.pre <- predict(knn.mod, daten[testind, ])
+```
+
+Für das Prediction Model wird k=3 verwendet.
+
+## Klassifikation mit Naïve Bayes
+
+Das Model wird an die Trainingsdaten angepasst:
+
+```{r}
+nb.mod <- naiveBayes(mode ~ sex + alter + dist, data = daten[-testind, ])
+nb.mod
+nb.pre <- predict(nb.mod, daten[testind, ])
+```
+
+Die A-priori-Wahrscheinlichkeiten (wenn wir nichts über die Weiteren Kredite und Bürgen wissen) betragen 65% für Autos und 35% für öffentliche Verkehrsmittel. Außerdem sind im Output noch die bedingten Wahrscheinlichkeiten angegeben, die zur Berechnung der interessierenden A-posteriori Wahrscheinlichkeiten (Einteilung der Rückzahlungen bedingt auf *sex*, *alter* und *dist*) verwendet werden.
+
+Autofahrer sind im Schnitt zu 68% männlich und zu 32% weiblich. Während bei den Öffentlichen Verkehrsmitteln eine Perfekte 50/50 Chance zu erkennen ist.
+
+Im Durchschnitt, ist das Alter der Autofahrer um etwa 8 Jahre mit 39 Jahren höher, als das Durschnittsalter von Wählern öffentlicher Verkehrsmittel mit 31,5 Jahren im Durschnitt. Die Standardabweichung ist bei beiden Kategorien ähnlich hoch, wenn nicht sogar um etwa 2 höher für die Autowähler.
+
+Bei der Distanz ist ebenso eine Gewichtung der Autowähler zu erkennen. Im Durschnitt wohnen die Autofahrer etwa 6km weiter Weg als die StudentInnen welche ein öffentliches Verkehrsmittel wählen. Die Standardabweichung beider Kategorien ist unterscheidet sich nur gering um 0.8km.
+
+# Performance-Evaluierung
+
+```{r message=FALSE, warning=FALSE}
+library(caret)
+confusionMatrix(knn.pre, ref = daten$mode[testind], mode = "prec_recall", 
+                positive = "Auto")
+confusionMatrix(nb.pre, ref = daten$mode[testind], mode = "prec_recall", 
+                positive = "Auto")
+```
+
+-   Accuracy bei `k=3`: Etwa 54% der Beobachtungen (14 von 26 im Testdatensatz) wurden korrekt klassifiziert, wir erhalten also einen Klassifikationsfehler von etwa 46%. Die Treffergenauigkeit ist um 23% niedriger als die Nicht Informationsrate, und der p-Wert für den entsprechenden Acc \> NIR-Test ist somit sehr hoch. Betrachten wir den Konfidenzintervall, so sehen wir, dass die Schätzung für die Accuracy nicht so gut sind, da sie sich in einer Spanne von etwa 40% befinden, was bedeutet: Der wahre Wert kann irgendwo im Bereich von 33,37% bis 73,41% erwartet werden, der Klassifikationsfehler liegt somit in Wirklichkeit zwischen etwa 27% und 67%.
+
+-   Accuracy `Bayes` Etwa 65% der Beobachtungen (17 von 26 im Testdatensatz) wurden korrekt klassifiziert, wir erhalten also einen Klassifikationsfehler von etwa 35%. Die Treffergenauigkeit ist um 12% niedriger als die Nicht Informationsrate, und der p-Wert für den entsprechenden Acc \> NIR-Test ist somit sehr hoch aber geringer als bei `k=3`. Betrachten wir den Konfidenzintervall, so sehen wir, dass die Schätzung für die Accuracy nicht so gut sind, da sie sich in einer Spanne von etwa 40% befinden, was bedeutet: Der wahre Wert kann irgendwo im Bereich von 44,33% bis 82,79% erwartet werden, der Klassifikationsfehler liegt somit in Wirklichkeit zwischen etwa 17% und 56%. Die Genauigkeit für `Bayes` ist zwar höher, aber die allgemeine Genauigkeit scheint doch nur knapp gut zu sein. Die geringe Genauigkeit beruht vermutlich auf die geringe Datensatzanzahl von 78 Datensätzen.
+
+-   Precision: In beiden Methoden liegt die Precision sehr nahe beieinander mit etwa 72% für `k=3` und 76% für `Bayes`
+
+-   Precision:
+
+    -   `k=3`: Von 18 angenommenen Autofahrern sind 13 tatsächlich Autofahrer, die Precision liegt daher bei 72,22%.
+
+    -   `Bayes`: Von 21 angenommenen Autofahrern sind 16 tatsächlich Autofahrer, die Precision liegt daher bei 76,19%.
+
+-   Recall: Von der 'Positive' Class (den StudentInnen die Auto gewählt haben) wurden insgesamt 65% bei `k=3` und 80% bei `Bayes` korrekt klassifiziert.
+
+-   F1: Auch der F1 liegt bei beiden Methoden relativ hoch mit jeweils 68% und 78%.
+
+# Fazit
+
+Das `Bayes` Model hat überblickend eine höhere Genauigkeit, Precision, Recall und F1 Wert. In allen vorhandenen Punkten ist die `Bayes` Methode in diesem Fall zu bevorzugen.

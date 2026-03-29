@@ -1,0 +1,172 @@
+---
+title: "True_Wireless_In-Ear_Kopfhörer"
+author: "wi22b124"
+format: pdf
+editor: visual
+---
+
+```{r}
+library(ggplot2)
+library(dendextend)
+library(cluster)
+library(knitr)
+options(knitr.kable.NA = '', scipen=999)
+```
+
+# Datenmanagement
+
+Die Daten wurden mit read.table() eingelesen:
+
+```{r}
+inEar <- read.table(file="./wi22b124.txt", sep=";", header=TRUE)
+head(inEar)
+```
+
+Wir extrahieren die interessierenden Variablen laufzeit und ladezeit und überprüfen, ob es Beobachtungseinheiten gibt, die fehlende Werte aufweisen:
+
+```{r}
+summary(inEar)
+```
+
+Die Zusammenfassung zeigt uns, dass keine fehlenden Werte vorliegen. Wir überprüfen auch noch die Stichprobengröße:
+
+```{r}
+nrow(inEar)
+```
+
+Der Datensatz umfasst 28 Kopfhörermodelle.
+
+# Standardisierung
+
+Um die unterschiedlichen Wertebereiche der zwei metrischen Variablen auszugleichen, werden diese standardisiert:
+
+```{r}
+inEar.s <- scale(inEar[, c("laufzeit", "ladezeit")])
+```
+
+# Visualisierung des Datensatzes
+
+Wir visualisieren den Datensatz mit einem Streudiagramm:
+
+```{r}
+ggplot(as.data.frame(inEar.s), aes(x = ladezeit, y = laufzeit)) +
+  geom_point() +
+  labs(title = "Streudiagramm der Laufzeit und Ladezeit", x = "Ladezeit (standardisiert)", y = "Laufzeit (standardisiert)")
+```
+
+Es lassen sich möglicherweise einige Gruppen/Cluster erkennen, aber die genaue Anzahl ist schwer zu bestimmen. Eine hierarchische Clusteranalyse könnte hierbei helfen.
+
+## Hierarchisches Clustering
+
+Im nächsten Schritt berechnen wir die Distanzmatrix:
+
+```{r}
+d.inEar <- dist(inEar.s)
+```
+
+Wir führen die hierarchische Clusteranalyse mit verschiedenen Methoden durch:
+
+```{r}
+hc.zent <- hclust(d.inEar, method = "centroid")
+hc.sing <- hclust(d.inEar, method = "single")
+hc.comp <- hclust(d.inEar, method = "complete")
+hc.ave <- hclust(d.inEar, method = "average")
+hc.ward <- hclust(d.inEar, method = "ward.D2")
+```
+
+Wir visualisieren die Dendrogramme für alle fünf Methoden:
+
+```{r}
+plot(hc.zent, hang = -1, main = "Zentroid-Methode", sub = "")
+plot(hc.sing, hang = -1, main = "Single Linkage", sub = "")
+plot(hc.comp, hang = -1, main = "Complete Linkage", sub = "")
+plot(hc.ave, hang = -1, main = "Average Linkage", sub = "")
+plot(hc.ward, hang = -1, main = "Ward-Methode", sub = "")
+```
+
+Bei der Zentroid Methode kann man einige Überlappungen erkennen. Aufgrund dieser Inversion ist diese Methode nicht für die Clusterbestimmung zu verwenden. Single Linkage hat auch einige Überlappungen und ist somit ebenfalls auszuschließen. Ward Methode und Average Linkage sind am übersichtlichsten, demnach werden wir uns in dem Fall hierfür entscheiden.
+
+# Bestimmung der Anzahl der Cluster
+
+Nach der visuellen Analyse der Dendrogramme haben wir uns für die zwei beste Entschieden.
+
+### Clusteranalyse: Ward-Methode
+
+Wir wählen zunächst die Ward-Methode und entscheiden uns für eine 3-Cluster-Lösung:
+
+```{r}
+clusters.ward <- cutree(hc.ward, k = 3)
+table(clusters.ward)
+```
+
+Wir visualisieren die Cluster im Streudiagramm:
+
+```{r}
+ggplot(as.data.frame(inEar.s), aes(x = ladezeit, y = laufzeit, color = as.factor(clusters.ward))) +
+  geom_point() +
+  labs(title = "3-Cluster-Lösung (Ward-Methode)", x = "Ladezeit (standardisiert)", y = "Laufzeit (standardisiert)", color = "Cluster")
+```
+
+Cluster 1 und 3 sind gut und knapp beisammen, Cluster 2 hingegen weißt einen außreiser auf.
+
+### Clusteranalyse: Average Linkage
+
+Wir wählen als zweite Methode die Average Linkage und entscheiden uns für eine 4-Cluster-Lösung:
+
+```{r}
+clusters.ave <- cutree(hc.ave, k = 4)
+table(clusters.ave)
+```
+
+Wir visualisieren auch diese Clusterlösung:
+
+```{r}
+ggplot(as.data.frame(inEar.s), aes(x = ladezeit, y = laufzeit, color = as.factor(clusters.ave))) +
+  geom_point() +
+  labs(title = "4-Cluster-Lösung (Average Linkage)", x = "Ladezeit (standardisiert)", y = "Laufzeit (standardisiert)", color = "Cluster")
+```
+
+Cluster 1 ist erneut gut und knapp beisammen. Ebenso wie alle anderen Cluster, jedoch sind Cluster 2,3 und 4 sehr klein und weisen teilweise nur einen Datensatz auf.
+
+# Clusterbeschreibungen
+
+Wir beschreiben die gefundenen Cluster, indem wir die Mittelwerte der laufzeit und ladezeit für jeden Cluster berechnen:
+
+```{r}
+aggregate(inEar[, c("laufzeit", "ladezeit")], by = list(Cluster = clusters.ward), mean)
+aggregate(inEar[, c("laufzeit", "ladezeit")], by = list(Cluster = clusters.ave), mean)
+```
+
+Die Ward-Methode bietet eine klarere Trennung zwischen Modellen mit unterschiedlicher Laufzeit und Ladezeit, während die Average Linkage Methode feinere Unterschiede zwischen den Modellen herausarbeitet, insbesondere bei den extremen Werten für Laufzeit und Ladezeit.
+
+Die Wahl der Methode hängt von den spezifischen Anforderungen ab: Wenn eine gröbere, aber klare Einteilung gewünscht ist, ist die Ward-Methode geeignet. Für detailliertere Unterscheidungen bietet die Average Linkage Methode mehr Einblicke.
+
+# Bewertung der Clusterlösungen mit Silhouettenplots
+
+Wir bewerten die Qualität der Clusterlösungen mit Hilfe von Silhouettenplots:
+
+```{r}
+sil.ward <- silhouette(clusters.ward, d.inEar)
+sil.ave <- silhouette(clusters.ave, d.inEar)
+
+par(mfrow = c(1, 2))
+plot(sil.ward, main = "Silhouettenplot (Ward-Methode)")
+plot(sil.ave, main = "Silhouettenplot (Average Linkage)")
+```
+
+Die Silhouettenplots zeigen, dass sich bei beiden Lösungen eine gewisse Struktur in den Daten erkennen lässt, wobei die Ward-Methode möglicherweise eine etwas bessere Clusterqualität bietet.
+
+# Fazit
+
+Nach Analyse der hierarchischen Clusterlösungen scheint die Ward-Methode mit 3 Clustern die bessere Wahl zu sein, da sie eine klarere Struktur bietet. Die Gruppen zeigen deutliche Unterschiede in ihren durchschnittlichen Laufzeiten und Ladezeiten, was auf eine sinnvolle Clusterbildung hinweist. Die Average Linkage Methode mit 4 Clustern bietet ebenfalls eine brauchbare Lösung, zeigt aber eine geringere Clusterkohäsion.
+
+# Sachen für test:
+
+## Bannerplot:
+
+Man muss eigentlich von links nach rechts lesen, die weißen Werte sind die eigentlichen Werte. Wenn man auf die x-Achse achtet, wird der Wert nach rechts größer, demnach ist es von links nach rechts zu lesen, Je mehr weiß ein Balken ist, desto höher ist er, je mehr rot ein Balken ist, desto weniger hoch ist er. Je mehr rot die Daten sind, desto ähnlicher sind sie sich, desto besser ist es also für die Cluster. Je weißer die Daten sind, desto verschiedener sind die Daten, im Umkehrschluss schlechter für die Cluster.
+
+```{r}
+
+bannerplot(sil.ward)
+```

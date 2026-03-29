@@ -1,0 +1,56 @@
+---
+title: "Sommerreifen_UebungT5"
+author: "wi22b124"
+format: pdf
+editor: visual
+---
+
+# Sommerreifen
+
+Im ÖAMTC-Sommerreifentest wurden Reifen in zwei unterschiedlichen Dimensionen (175 und 195) in 12 verschiedenen Kategorien bewertet (Noten von 0.5 bis 5.5; niedriger ist besser). Zwei Kategorien, die das Bremsverhalten beschreiben, werden hier genauer untersucht. Die Bremsdauer bei trockenen und bei nassen Reifen.
+
+## Tabelle erstellen
+
+Die Daten vom ÖAMTC-Sommerreifentest werden in eine Tabelle eingelesen um für die weiteren Berechnungen bereitzustehen:
+
+```{r}
+tire <- read.table(file = "./wi22b124.txt", sep = ";")
+print(tire)
+summary(tire)
+```
+
+## Grafische Darstellung
+
+Zur simpleren Veranschaulichung werden die Daten grafisch in einem Scatterplot dargestellt, außerdem wird mit `abline()` noch eine Regressionsgerade eingezeichnet:
+
+```{r}
+library(car)
+scatterplot(tire$bremsen_nass, tire$bremsen_trocken, regLine = FALSE, smooth = FALSE, grid = FALSE, col=1, main="Bremsdauer von trockenen Reifen in Abhängigkeit zu nassen Reifen")
+abline(lm(bremsen_trocken ~ bremsen_nass, data = tire), col ="red")
+```
+
+In der Grafik ist sofort erkennbar dass sich einige Ausreißer in den Daten befinden. Unter der Kategorie der Bremsleistung unter nassem Einfluss befinden sich eindeutig stärkere Ausreißer als im Vergleich zu der Katerie der Leistung im trockenen Zustand. Der Großteil der Daten befindet sich für trockene Reifen zwischen 1.0 und 2.0, bei nassen Reifen hingegen zwischen 2.0 und 3.0.
+
+## Zusammenhang?
+
+### Pearson
+
+Nun stellt sich die Frage, ob die vorhandenen Daten eine Korrelation aufweisen. Mit der Funktion `cor.test()` werden die beiden vorhandenen Datenvektoren auf ihren Zusammenhang mittels Pearson'schen Korrelationskoeffizientstest geprüft:
+
+```{r}
+cor.test(~ bremsen_trocken + bremsen_nass, data=tire )
+```
+
+Der Test ergibt einen Wert von $0.5726995$, damit kann der entschluss gefasst werden, dass es sich bei den Werten um eine mäßige positive Korrelation handelt. Was bedeutet: Man könnte einen Zusammenhang zwischen den Daten leicht vermuten, jedoch ist nichts bestätigt. Es muss beachtet werden, dass sich unter den Daten einige Ausreißer befinden. Die Spearman'sche Methode weißt eine stärkere Robustheit gegenüber Ausreißern auf, wodurch diese Methode in dieser Situation auf jeden Fall in betracht gezogen werden sollte.
+
+Das Konfidenzintervall von 0.21 bis 0.80 sagt uns, dass die Bedeutung vom Korrelationskoeffizienten stark instabil ist. Da beide Grenzen des Intervalls stark auseinandergehen, könnte angenommen werden, dass die eigentliche Korrelation bis hin zu beiden Grenzen gespannt werden kann. Das bedeutet, man schwankt mit dem Ergebnis von keine Korrelation bis hin zu deutlich positive Korrelation.
+
+### Spearman
+
+Mittels dem Zusatz `method = "spearman"`, kann der Korrelationstest auf Spearman umgestellt werden:
+
+```{r}
+cor.test(~ bremsen_trocken + bremsen_nass, data=tire, method="spearman")
+```
+
+Der Spearman'sche Korrelationskoeffizient liegt um knapp 0.2 unter dem Pearson'schen. Dadurch sinkt die Korrelation auf eine geringe positive Korrelation. Da sich in den Daten einige starke Ausreißer befinden, sollte in der Situation eher die Methode von Spearman herangezogen werden. Was bedeutet dass der Zusammenhang zwischen den Daten nur schwer angenommen werden kann, wodurch streng genommen kein Zusammenhang nachgewiesen werden kann.

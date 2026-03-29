@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" contentScriptType="application/ecmascript" contentStyleType="text/css" height="245px" preserveAspectRatio="none" style="width:217px;height:245px;" version="1.1" viewBox="0 0 217 245" width="217px" zoomAndPan="magnify"><defs><filter height="300%" id="f1s45m6l2cktwg" width="300%" x="-1" y="-1"><feGaussianBlur result="blurOut" stdDeviation="2.0"/><feColorMatrix in="blurOut" result="blurOut2" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .4 0"/><feOffset dx="4.0" dy="4.0" in="blurOut2" result="blurOut3"/><feBlend in="SourceGraphic" in2="blurOut3" mode="normal"/></filter></defs><g><!--MD5=[19ffd12c74edf8b394dc89512fd4021b]
+class Workout.Running--><a href="Running.html" target="_top" title="Running.html" xlink:actuate="onRequest" xlink:href="Running.html" xlink:show="new" xlink:title="Running.html" xlink:type="simple"><rect codeLine="5" fill="#FEFECE" filter="url(#f1s45m6l2cktwg)" height="105.1563" id="Workout.Running" style="stroke: #A80036; stroke-width: 1.5;" width="191" x="7" y="105"/><ellipse cx="69.25" cy="123.9688" fill="#ADD1B2" rx="11" ry="11" style="stroke: #A80036; stroke-width: 1.0;"/><path d="M72.2188,129.6094 Q71.6406,129.9063 71,130.0469 Q70.3594,130.2031 69.6563,130.2031 Q67.1563,130.2031 65.8281,128.5625 Q64.5156,126.9063 64.5156,123.7813 Q64.5156,120.6563 65.8281,119 Q67.1563,117.3438 69.6563,117.3438 Q70.3594,117.3438 71,117.5 Q71.6563,117.6563 72.2188,117.9531 L72.2188,120.6719 Q71.5938,120.0938 71,119.8281 Q70.4063,119.5469 69.7813,119.5469 Q68.4375,119.5469 67.75,120.625 Q67.0625,121.6875 67.0625,123.7813 Q67.0625,125.875 67.75,126.9531 Q68.4375,128.0156 69.7813,128.0156 Q70.4063,128.0156 71,127.75 Q71.5938,127.4688 72.2188,126.8906 L72.2188,129.6094 Z "/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="58" x="89.75" y="122.9951">Running</text><text fill="#000000" font-family="sans-serif" font-size="10" lengthAdjust="spacingAndGlyphs" textLength="40" x="98.75" y="135.5791">Workout</text><line style="stroke: #A80036; stroke-width: 1.5;" x1="8" x2="197" y1="142.9375" y2="142.9375"/><rect fill="none" height="6" style="stroke: #C82930; stroke-width: 1.0;" width="6" x="15" y="150.9375"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacingAndGlyphs" textLength="70" x="27" y="157.1479">distance: int</text><line style="stroke: #A80036; stroke-width: 1.5;" x1="8" x2="197" y1="163.7422" y2="163.7422"/><ellipse cx="18" cy="174.7422" fill="#84BE84" rx="3" ry="3" style="stroke: #038048; stroke-width: 1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacingAndGlyphs" textLength="165" x="27" y="177.9526">Running(Date, int, int, String)</text><ellipse cx="18" cy="187.5469" fill="#84BE84" rx="3" ry="3" style="stroke: #038048; stroke-width: 1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacingAndGlyphs" textLength="96" x="27" y="190.7573">getIntensity(): int</text><ellipse cx="18" cy="200.3516" fill="#84BE84" rx="3" ry="3" style="stroke: #038048; stroke-width: 1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacingAndGlyphs" textLength="87" x="27" y="203.562">getEnergy(): int</text></a><!--MD5=[0f81df3f44817ebb52349d02ba17b91f]
+class Workout.BasicWorkout--><a href="BasicWorkout.html" target="_top" title="BasicWorkout.html" xlink:actuate="onRequest" xlink:href="BasicWorkout.html" xlink:show="new" xlink:title="BasicWorkout.html" xlink:type="simple"><rect codeLine="12" fill="#FEFECE" filter="url(#f1s45m6l2cktwg)" height="37.9375" id="Workout.BasicWorkout" style="stroke: #A80036; stroke-width: 1.5;" width="127" x="39" y="7"/><ellipse cx="54" cy="25.9688" fill="#ADD1B2" rx="11" ry="11" style="stroke: #A80036; stroke-width: 1.0;"/><path d="M56.9688,31.6094 Q56.3906,31.9063 55.75,32.0469 Q55.1094,32.2031 54.4063,32.2031 Q51.9063,32.2031 50.5781,30.5625 Q49.2656,28.9063 49.2656,25.7813 Q49.2656,22.6563 50.5781,21 Q51.9063,19.3438 54.4063,19.3438 Q55.1094,19.3438 55.75,19.5 Q56.4063,19.6563 56.9688,19.9531 L56.9688,22.6719 Q56.3438,22.0938 55.75,21.8281 Q55.1563,21.5469 54.5313,21.5469 Q53.1875,21.5469 52.5,22.625 Q51.8125,23.6875 51.8125,25.7813 Q51.8125,27.875 52.5,28.9531 Q53.1875,30.0156 54.5313,30.0156 Q55.1563,30.0156 55.75,29.75 Q56.3438,29.4688 56.9688,28.8906 L56.9688,31.6094 Z "/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="95" x="68" y="24.9951">BasicWorkout</text><text fill="#000000" font-family="sans-serif" font-size="10" lengthAdjust="spacingAndGlyphs" textLength="40" x="95.5" y="37.5791">Workout</text></a><!--MD5=[9413c96beb3f71eb2b243bf4d9a1649d]
+reverse link Workout.BasicWorkout to Workout.Running--><path codeLine="14" d="M102.5,65.16 C102.5,77.59 102.5,91.6 102.5,104.85 " fill="none" id="Workout.BasicWorkout-backto-Workout.Running" style="stroke: #A80036; stroke-width: 1.0;"/><polygon fill="none" points="95.5,65.01,102.5,45.01,109.5,65.01,95.5,65.01" style="stroke: #A80036; stroke-width: 1.0;"/><text fill="#888888" font-family="sans-serif" font-size="10" lengthAdjust="spacingAndGlyphs" textLength="192" x="3.5" y="232.4385">UMLDoclet 2.0.12, PlantUML 1.2020.16</text><!--MD5=[895995b70c0658dfc88f4eff450bc325]
+@startuml
+    set namespaceSeparator none
+    hide empty fields
+    hide empty methods
+
+    class "<size:14>Running\n<size:10>Workout" as Workout.Running [[Running.html]] {
+        -distance: int
+        +Running(Date, int, int, String)
+        +getIntensity(): int
+        +getEnergy(): int
+    }
+
+    class "<size:14>BasicWorkout\n<size:10>Workout" as Workout.BasicWorkout [[BasicWorkout.html]]
+
+    Workout.BasicWorkout <|- - Workout.Running
+
+    center footer UMLDoclet 2.0.12, PlantUML 1.2020.16
+@enduml
+
+PlantUML version 1.2020.16(Sun Aug 23 22:20:43 CEST 2020)
+(APACHE source distribution)
+Java Runtime: OpenJDK Runtime Environment
+JVM: OpenJDK 64-Bit Server VM
+Default Encoding: ANSI_X3.4-1968
+Language: en
+Country: US
+--></g></svg>

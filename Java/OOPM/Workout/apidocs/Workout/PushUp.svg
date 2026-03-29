@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" contentScriptType="application/ecmascript" contentStyleType="text/css" height="245px" preserveAspectRatio="none" style="width:204px;height:245px;" version="1.1" viewBox="0 0 204 245" width="204px" zoomAndPan="magnify"><defs><filter height="300%" id="f106fyuis3yru1" width="300%" x="-1" y="-1"><feGaussianBlur result="blurOut" stdDeviation="2.0"/><feColorMatrix in="blurOut" result="blurOut2" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .4 0"/><feOffset dx="4.0" dy="4.0" in="blurOut2" result="blurOut3"/><feBlend in="SourceGraphic" in2="blurOut3" mode="normal"/></filter></defs><g><!--MD5=[cbf094ec8a5b35918ed4a268b77c4ebc]
+class Workout.PushUp--><a href="PushUp.html" target="_top" title="PushUp.html" xlink:actuate="onRequest" xlink:href="PushUp.html" xlink:show="new" xlink:title="PushUp.html" xlink:type="simple"><rect codeLine="5" fill="#FEFECE" filter="url(#f106fyuis3yru1)" height="105.1563" id="Workout.PushUp" style="stroke: #A80036; stroke-width: 1.5;" width="125" x="36.5" y="105"/><ellipse cx="69.05" cy="123.9688" fill="#ADD1B2" rx="11" ry="11" style="stroke: #A80036; stroke-width: 1.0;"/><path d="M72.0188,129.6094 Q71.4406,129.9063 70.8,130.0469 Q70.1594,130.2031 69.4563,130.2031 Q66.9563,130.2031 65.6281,128.5625 Q64.3156,126.9063 64.3156,123.7813 Q64.3156,120.6563 65.6281,119 Q66.9563,117.3438 69.4563,117.3438 Q70.1594,117.3438 70.8,117.5 Q71.4563,117.6563 72.0188,117.9531 L72.0188,120.6719 Q71.3938,120.0938 70.8,119.8281 Q70.2063,119.5469 69.5813,119.5469 Q68.2375,119.5469 67.55,120.625 Q66.8625,121.6875 66.8625,123.7813 Q66.8625,125.875 67.55,126.9531 Q68.2375,128.0156 69.5813,128.0156 Q70.2063,128.0156 70.8,127.75 Q71.3938,127.4688 72.0188,126.8906 L72.0188,129.6094 Z "/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="54" x="86.95" y="122.9951">PushUp</text><text fill="#000000" font-family="sans-serif" font-size="10" lengthAdjust="spacingAndGlyphs" textLength="40" x="93.95" y="135.5791">Workout</text><line style="stroke: #A80036; stroke-width: 1.5;" x1="37.5" x2="160.5" y1="142.9375" y2="142.9375"/><rect fill="none" height="6" style="stroke: #C82930; stroke-width: 1.0;" width="6" x="44.5" y="150.9375"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacingAndGlyphs" textLength="83" x="56.5" y="157.1479">repetitions: int</text><line style="stroke: #A80036; stroke-width: 1.5;" x1="37.5" x2="160.5" y1="163.7422" y2="163.7422"/><ellipse cx="47.5" cy="174.7422" fill="#84BE84" rx="3" ry="3" style="stroke: #038048; stroke-width: 1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacingAndGlyphs" textLength="99" x="56.5" y="177.9526">PushUp(Date, int)</text><ellipse cx="47.5" cy="187.5469" fill="#84BE84" rx="3" ry="3" style="stroke: #038048; stroke-width: 1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacingAndGlyphs" textLength="96" x="56.5" y="190.7573">getIntensity(): int</text><ellipse cx="47.5" cy="200.3516" fill="#84BE84" rx="3" ry="3" style="stroke: #038048; stroke-width: 1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacingAndGlyphs" textLength="87" x="56.5" y="203.562">getEnergy(): int</text></a><!--MD5=[0f81df3f44817ebb52349d02ba17b91f]
+class Workout.BasicWorkout--><a href="BasicWorkout.html" target="_top" title="BasicWorkout.html" xlink:actuate="onRequest" xlink:href="BasicWorkout.html" xlink:show="new" xlink:title="BasicWorkout.html" xlink:type="simple"><rect codeLine="12" fill="#FEFECE" filter="url(#f106fyuis3yru1)" height="37.9375" id="Workout.BasicWorkout" style="stroke: #A80036; stroke-width: 1.5;" width="127" x="35.5" y="7"/><ellipse cx="50.5" cy="25.9688" fill="#ADD1B2" rx="11" ry="11" style="stroke: #A80036; stroke-width: 1.0;"/><path d="M53.4688,31.6094 Q52.8906,31.9063 52.25,32.0469 Q51.6094,32.2031 50.9063,32.2031 Q48.4063,32.2031 47.0781,30.5625 Q45.7656,28.9063 45.7656,25.7813 Q45.7656,22.6563 47.0781,21 Q48.4063,19.3438 50.9063,19.3438 Q51.6094,19.3438 52.25,19.5 Q52.9063,19.6563 53.4688,19.9531 L53.4688,22.6719 Q52.8438,22.0938 52.25,21.8281 Q51.6563,21.5469 51.0313,21.5469 Q49.6875,21.5469 49,22.625 Q48.3125,23.6875 48.3125,25.7813 Q48.3125,27.875 49,28.9531 Q49.6875,30.0156 51.0313,30.0156 Q51.6563,30.0156 52.25,29.75 Q52.8438,29.4688 53.4688,28.8906 L53.4688,31.6094 Z "/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="95" x="64.5" y="24.9951">BasicWorkout</text><text fill="#000000" font-family="sans-serif" font-size="10" lengthAdjust="spacingAndGlyphs" textLength="40" x="92" y="37.5791">Workout</text></a><!--MD5=[04a39eafd2b038651f0f4c56888a49ef]
+reverse link Workout.BasicWorkout to Workout.PushUp--><path codeLine="14" d="M99,65.16 C99,77.59 99,91.6 99,104.85 " fill="none" id="Workout.BasicWorkout-backto-Workout.PushUp" style="stroke: #A80036; stroke-width: 1.0;"/><polygon fill="none" points="92,65.01,99,45.01,106,65.01,92,65.01" style="stroke: #A80036; stroke-width: 1.0;"/><text fill="#888888" font-family="sans-serif" font-size="10" lengthAdjust="spacingAndGlyphs" textLength="192" x="0" y="232.4385">UMLDoclet 2.0.12, PlantUML 1.2020.16</text><!--MD5=[cb7149a000479f9ad62fb64508bae76f]
+@startuml
+    set namespaceSeparator none
+    hide empty fields
+    hide empty methods
+
+    class "<size:14>PushUp\n<size:10>Workout" as Workout.PushUp [[PushUp.html]] {
+        -repetitions: int
+        +PushUp(Date, int)
+        +getIntensity(): int
+        +getEnergy(): int
+    }
+
+    class "<size:14>BasicWorkout\n<size:10>Workout" as Workout.BasicWorkout [[BasicWorkout.html]]
+
+    Workout.BasicWorkout <|- - Workout.PushUp
+
+    center footer UMLDoclet 2.0.12, PlantUML 1.2020.16
+@enduml
+
+PlantUML version 1.2020.16(Sun Aug 23 22:20:43 CEST 2020)
+(APACHE source distribution)
+Java Runtime: OpenJDK Runtime Environment
+JVM: OpenJDK 64-Bit Server VM
+Default Encoding: ANSI_X3.4-1968
+Language: en
+Country: US
+--></g></svg>

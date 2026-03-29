@@ -1,0 +1,157 @@
+---
+title: "T2_wi22b124_Professor*innen"
+author: "wi22b124"
+format: pdf
+editor: visual
+---
+
+# Ausgangssituation
+
+An einer großen amerikanischen Universität wurden Daten über Professor\*innen gesammelt. Diese beinhalten die Einstufung, das jährliche Gehalt in USD und die Dienstjahre.
+
+## Datenmanagement
+
+Die Daten werden mit `read.table()` eingelesen.
+
+```{r}
+prof <- read.table("./wi22b124.txt", sep=",", head=TRUE)
+summary(prof)
+```
+
+Es sind einige NA's im Datensatz enthalten, sonst scheint es keine offensichtlichen Ausreißer zu geben. Die NA's aus dem Datensatz gelöscht.
+
+```{r}
+any(is.na(prof))
+cc = complete.cases(prof)
+subprof = subset(prof, cc)
+summary(subprof)
+```
+
+## Standardisierung
+
+Um die unterschiedlichen Wertebereiche der drei Variablen auszugleichen, werden diese standardisiert. Da eine kategoriale Variable (Einstufung) enthalten ist, erfolgt die Standardisierung mit der Gower-Metrik (Package cluster). Gehalt und Dienstjahre sind unsere die einzigen Metrischen variablen, diese werden allein für die weitere Verwendung genutzt.
+
+```{r}
+library(cluster)
+data <- daisy(subprof[,c("gehalt", "dienstjahre")], metric = "gower")
+```
+
+## Bestimmung der Clusteranzahl
+
+Als Clustermethode wird die k-Medoids Clustering Methode verwendet, da k-Means keine Distanzmatritzen verarbeiten kann.
+
+```{r}
+zf <- c()
+for(i in 1:10) {
+zf[i] <- sum(pam(data, i)$objective)
+}
+ziel <- data.frame(Clusteranzahl = 1:10,
+Zielfunktion = zf)
+plot(ziel$Zielfunktion ~ ziel$Clusteranzahl, type="b", xaxp= c(1, 10, 9))
+```
+
+Der Ellbogenplot weißt einen leichten Knick bei einer Clusteranzahl von 2 auf, jedoch ist ebenso ein viel stärker erkennbarer Knick bei 3 Clustern vorhanden. Beim genaueren Hinsehen könnte man auch behaupten dass ab 4 Clustern ein Knick erkennbar ist. Es wird daher eine 3 Cluster Lösung verwendet:
+
+```{r}
+set.seed(1)
+pam.res3 <- pam(data, 3)
+pam.res3
+```
+
+Nun werden die Medoiden genauer betrachtet, dies sind Beobachtungen, die den entsprechenden Cluster am Besten repräsentieren. Dies wären dann wohl die Nr. 95 für Cluster 1, Nr. 68 für Cluster 2 und die 46 für Cluster 3.
+
+```{r}
+prof[pam.res3$medoids, ]
+```
+
+Im ersten Cluster sind demnach Univ.-Prof. vorhanden mit hohen Gehalt und mittlerer Dienstzeit. Cluster zwei weißt scheinbar Daten von außerord. Prof. auf, welche geringes gehalt mit einer geringen Dienstzeit haben. Zu guter letzt zeigt Cluster 3 Datensätze von Univ.-Prof. mit mittlerem Gehalt aber hoher Dienstzeit.
+
+```{r}
+pam.res3$clusinfo
+```
+
+Der erste Cluster weißt 27 Datensätze auf und ist damit auf Platz 2 für Größe. Der zweite Cluster ist mit 32 Datenstätzen der größte Cluster. Wohingegen der dritte Cluster mit 25 der kleinste ist. Alles in allem sind die Cluster gut verteilt wenn man ihre Größe betrachtet.
+
+## Visualisierung
+
+### Clustering-Plot
+
+#### 3 Cluster
+
+Der Clustering-Plot wird verwendet, um die obige 3 Cluster Lösung grafisch darzustellen:
+
+```{r}
+clusplot(pam.res3, labels = 2, shade = TRUE)
+```
+
+Wie auch schon vorhin aus der Clusteranalyse erkennbar war, ist der zweite Cluster am Besten abgegrenzt von den anderen Datensätzen. Jedoch überlappen Cluster 3 und 1 bei einigen Datensätzen. Dies liegt womöglich daran, dass sich die vorhandene kategoriale Variable wohl nicht eindeutig mit den beiden anderen metrischen Variablen bestimmen lässt zumindest wenn es um Professor\*innen in der Einstufung außerord. Prof. und Assistenzprof. geht. Diese werden hier scheinbar in Cluster zwei Zusammengefasst, da sie ähnliche metrische Merkmale aufweisen: geringes Gehalt mit geringen Dienstjahren.
+
+Dies ist ebenso erkennbar wenn die kategoriale Variable der einzelnen Cluster näher betrachtet wird: In Cluster 1 sind nur Univ.-Prof.:
+
+```{r}
+table(subprof$einstufung[pam.res3$clustering == 1])
+```
+
+Cluster 2 hat hauptsächlich Assistenzprof. und Außerord. Prof.:
+
+```{r}
+table(subprof$einstufung[pam.res3$clustering == 2])
+```
+
+Und Cluster 3 hat wieder hauptsächlich Univ.-Prof.:
+
+```{r}
+table(subprof$einstufung[pam.res3$clustering == 3])
+```
+
+Ist die Lösung jedoch die Beste?
+
+Zur genaueren Überprüfung werden noch die zwei anderen möglichen Cluster Lösungen herangezogen:
+
+#### 2 Cluster
+
+```{r}
+pam.res2 <- pam(data, 2)
+pam.res2
+prof[pam.res2$medoids, ]
+pam.res2$clusinfo
+clusplot(pam.res2, labels = 2, shade = TRUE)
+```
+
+Cluster 1 ist um 40% größer als Cluster 2, die Cluster wurden Zusammengefasst auf: Cluster 1: wenig Gehalt, wenig Dienstjahre und Cluster 2: hohes Gehalt, viele Dienstjahre. Es gibt dennoch Überlappungen, diese sind sogar noch stärker ausgeprägt als in der 3 Cluster Methode. Nach dieser Analyse ist dennoch die 3 Cluster Analyse vorzuziehen.
+
+#### 4 Cluster
+
+```{r}
+pam.res4 <- pam(data, 4)
+pam.res4
+prof[pam.res4$medoids, ]
+pam.res4$clusinfo
+clusplot(pam.res4, labels = 2, shade = TRUE)
+```
+
+Cluster 1, 3, und 4 sind alle etwa gleich groß, wohingegen Cluster 2 vergleichsweise größer ist. Diese Lösung ist ähnlich der 3 Cluster Lösung, Cluster 2 von beiden Lösungen sind beinah ident. Hier sind wieder Überlappungen vorhanden, jedoch schwächer ausgeprägt als in der Cluster 3 Lösung. Da die einzige neue Unterscheidung in dieser Lösung allerdings der Cluster 3 ist, der Cluster 1 und 4 etwas voneinander trennt, ist dennoch die 3 Cluster Lösung die bessere Entscheidung, da die Überlappung von der 3 Cluster Lösung in unserer Situation nicht vollkommen unerklärlich ist, betrachtet man den Kontext des Beispiels.
+
+### Silhouettenplot
+
+```{r}
+plot(silhouette(pam.res3))
+```
+
+```{r}
+plot(silhouette(pam.res2))
+```
+
+```{r}
+plot(silhouette(pam.res4))
+```
+
+Betrachtet man nun die Silhouettenplots der drei möglichen Lösungen, so stellt man fest, dass bei der 3 Cluster Lösung der Silhouettenkoeffizient mit 0.45 am höchsten ist. Ebenso sind bei der 4 Cluster Lösung die stärksten negativ Werte zu finden. Auf der anderen Seite sieht man bei der 2 Cluster Lösung, wie stark der Cluster 1 dominiert. Nach betrachten dieser drei möglichen Lösungen ist erkennbar, dass die 3 Cluster Lösung am Besten ausbalanciert ist und die Daten am Besten repräsentiert. Demnach wird sich nach der Analyse dennoch für den ersten Ansatz entschieden: 3 Cluster.
+
+# Notizen:
+
+Feste Reihenfolge setzen
+
+prof\$einstufung \<- ordered... (ist im Moodle Kurs)
+
+vor pam.res mach ein set.seed(1) !WICHTIG!

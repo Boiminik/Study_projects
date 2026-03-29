@@ -1,0 +1,12 @@
+after the first commit I opened the branch feature/digitSum, where I added the feature as well as a unit test
+I commited the changes, checkout to main, merged the two and pushed the result to the repository
+after that I opened the branch feature/usage, where I added a counter for each use of the digitSum feature as well as a unit test
+I proceeded as before, deleted both unused branches.
+
+User Story 1:
+As a user, I want to input a number and receive its digit sum, so that I can get the sum of all digits.
+User Story 2:
+As a user, I want to see how many times the digit sum feature has been used, so that I can track it.
+
+Repository Link:
+https://github.com/Boiminik/FinalExam_DPierdiluca

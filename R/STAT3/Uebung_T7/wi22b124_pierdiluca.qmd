@@ -1,0 +1,96 @@
+---
+title: "Zeitreihenanalyse_Uebung_T7"
+author: "wi22b124"
+format: pdf
+editor: visual
+---
+
+# Ausgangssituation
+
+An der New Yorker Börse wird tagtäglich mit unmengen an Aktien gehandelt. Es gilt die Börsenkurse von Brandywine GLOBAL Global Income Opportunities Fund im Zeitraum vom 20. Februar 2024 bis zum 28. März 2024 zu importieren und die Entwicklung zu beobachten.
+
+## Datenmanagement
+
+Mit dem `tseries-Package` können die Börsenkurse in einem gewissen Zeitraum geladen werden. Diese werden dann in ein `ts-Objekt` (time series Objekt) umgewandelt. Der `start` wird auf die 8. Kalenderwoche gesetzt und mit dem 2. Wochentag (Dienstag) gestartet. Da hier mit 5 Wochentagen gerechnet wird (Dienstag bis Samstag) gilt `frequency = 5`.
+
+```{r}
+library(tseries)
+daten <- get.hist.quote(instrument = "BWG", start = "2024-02-20", end = "2024-03-28", quote = "Low", compression = "d")
+start = c(08,2)
+datats = ts(data=daten,frequency = 5, start=start)
+summary(datats)
+```
+
+Der Mittelwert der Börsenkurse im gewählten Zeitraum liegt bei rund 8,44. Der höchste Kurs der erreicht wurde war 8,59, der niedrigste Kurs wurde mit 8,24 erreicht.
+
+## Visualisierung
+
+Das `ts-Objekt` kann nun per `plot` visualisiert werden.
+
+```{r}
+plot(datats, main="Aktienkurse von 20.02.2024 - 28.03.2024")
+```
+
+Im Zeitreihendiagramm erkennt man, dass innerhalb der 8. und 9. Kalenderwochen der Kurs noch recht niedrig war. Gegen Ende der 9. Kalenderwoche und kurz vor Anfang der 10. Kalenderwoche lässt sich ein rasanter Anstieg der Börsenkurse finden. Bis zum Ende der 13. Kalenderwoche stagniert der Kurs jedoch etwas, mit kleineren Auf- und Abstiegen in der Zwischenzeit. Man erkennt, dass die Werte seit beginn des Zeitraums angestiegen sind. Der Tiefpunkt wurde demnach schon sehr früh erreicht. Jedoch ist gegen Ende ein negativer Trend zu verzeichnen.
+
+### Zeitreihenzerlegung
+
+Damit die einzelnen Komponenten des Zeitreihendiagramms näher analysiert werden können, werden die additiven Daten per `decompose()` aufgeteilt:
+
+```{r}
+dec = decompose(datats)
+plot(dec)
+```
+
+Im `observed` Graph sieht man alle drei anderen Graphen zu einer Beobachtungsgrafik zusammengefasst. Beim `trend` Graph erkennt man wie sich die Daten in dem bestimmten Zeitraum verändert haben. Man erkennt einen stark konstanten Anstieg bis etwa zur Hälfte des Zeitraumes. Kurz nach dem hier dann der Höhepunkt erreicht wurde sinkt der Trend wieder leicht. Der `random` Graph visualisiert die zufälligen Fluktuationen des Zeitraums die weder durch den `trend` noch durch den `seasonal` erklärt werden können. Die Residuen, welche hier dargestellt werden, weisen eine Spannweite von 0.06 auf, was drei mal so groß ist wie die Spannweite von 0.02 vom seasonal Graphen. Daraus lässt sich schlussfolgern, dass sich hier nur ein schwacher Saisoneffekt finden lässt. Diese Theorie wird dadurch unterstützt, dass sich an dem `observed` Graphen keine saisonale Struktur finden lässt, ein Trend ist dennoch bei dem Graphen gut erkennbar.
+
+```{r}
+monthplot(dec$seasonal)
+```
+
+Am `Monthplot` ist erkennbar, dass die Werte an den Wochentagen 1,2 und 5 am höchsten sind, während sie an Tag 4 am niedrigsten sind. Hier gilt zu beachten, dass Dienstag Tag 1 ist und Samstag Tag 5. Dadurch, dass sich allerdings keine starke saisonale Struktur finden lies, ist ein saisonaler Zusammenhang der Daten stark unwahrscheinlich.
+
+## Modellschätzung
+
+Es gilt nun, die nächsten 11 Handelstage nach Ende des gewählten Zeitraumes zu prognostizieren.
+
+```{r}
+model = HoltWinters(datats)
+model
+```
+
+Bei der automatischen Anpassung der Glättungsparameter wurde für alpha (Parameter für Achsenabschnitt) etwa 25% gewählt (aktuelle Werte werden nur zu 25% berücksichtigt); für beta (Parameter für den Trend) wurde der Wert 1 (Berücksichtigung der aktuellen Werte zu 100%); der gleiche Wert kann beim gamma (Parameter für Saison) gefunden werden. Es werden für die Prognose somit haupstächlich die aktuellen Werte herangezogen. Wenn man sich die Grafik erneut anschaut, erkennt man gegen Ende das beste Muster des Trends, da die Prognose nur schwer den starken Anstieg am Beginn der 10. Kalenderwoche miteinbeziehen kann.
+
+Das Prognosemodell lautet somit: $$Y_{t+k} = 8,44 - 0,0265k + 0,0086(s = 1) - 0,0476(s = 2) - 0,0689(s = 3) - 0,0085(s = 4) - 0,00198(s = 5)$$ $k$ stellt hier den $k-ten$ Messpunkt (also den jeweiligen Wochentag) der Zukunft dar. Der Basiskurs der Börse im gewählten Zeitraum liegt somit bei 8,44, was zufälligerweise dem Mittelwert entspricht. Pro Tag sinkt dieser dann etwa um 0,0265 und wird je nach Wochentag (s1-s5) um bis zu 0,0086 nach oben oder um bis zu 0,0476 nach unten korrigiert. Das ist überraschend, anhand der Grafiken erkennt man einen generellen Anstieg der Kurse seit beginn, aber beim genaueren Betrachten der Werte und beim erstellen des Prognosemodells kann festgestellt werden, dass die Werte erwartender Weise in Zukunft wieder abfallen. Dies liegt vermutlich auch stark daran, dass sowohl für den Trendparameter als auch den Saisonparameter zu 100% aktuelle Werte herangezogen wurden (Werte die auf der x-Achse weiter rechts liegen). Ab da lies sich nämlich ein negativer Trend feststellen.
+
+Die Prognose für die nächsten 11 Handelstage lautet:
+
+```{r}
+pred = predict(model, n.ahead = 11,prediction.interval = TRUE)
+pred
+```
+
+und ist, zusammen mit den Ursprungsdaten in folgendem Diagramm zu sehen:
+
+```{r}
+plot(model, predicted.values = pred)
+```
+
+Um zu überprüfen wie genau das Prognosemodell ist, können hier die tatsächlichen Daten des prognostizierten Zeitraumes herangezogen werden. Somit kann die Legitimation der Prognose anhand eines Vergleichs bestätigt werden:
+
+```{r}
+#Gesamter Zeitraum seit Beginn bis 11 Handelstage nach Ende
+datenneu <- get.hist.quote(instrument = "BWG", start = "2024-02-20", end = "2024-04-13", quote = "Low", compression = "d")
+startneu = c(08,2)
+datatsneu = ts(data=datenneu,frequency = 5, start=startneu)
+```
+
+```{r}
+par(mfrow=c(2,1), mar=c(0.5,1,2,0.1))
+plot(model, predicted.values = pred, axes=FALSE)
+#Plot wurde entsprechend formatiert um visuell mit dem Prognosemodell zu überschneiden
+plot(datatsneu, ylim=c(7.52,8.8), xlim=c(9.2,15.6), main="Tatsächliche Daten im neuen Zeitraum", axes=FALSE)
+abline(v = 13.4,lwd=1, lty=3)
+```
+
+Wenn man beide Grafiken vergleicht, erkennt man, dass das Prognosemodell doch sehr akkurat ist. Nicht nur befindet sich die Linie innerhalb des Prognoseraums, sie verläuft außerdem noch in einem ziemlich ähnlichen Rahmen wie die Prognoselinie.

@@ -1,0 +1,102 @@
+---
+title: "Fitnesstracker_UebungT4"
+author: "wi22b124"
+format: pdf
+editor: visual
+---
+
+# Fitnesstracker
+
+Eine Beobachtung des Vorhandenseins zweier Features von 28 aktuellen Fitnesstrackern soll bearbeitet werden. Alle Fitnesstracker wurden überprüft, ob sie denn über die Funktionen zur Distanzanzeige und Aktivitätsaufzeichnung verfügen. Beantwortet wurden diese Fragen mit Ja oder Nein. Es gilt nun die gesammelten Werte in einer Tabelle aufzuzeichnen und anschließend einen Zusammenhang zwischen den Funktionen zu überprüfen.
+
+## Tabelle erstellen
+
+Die zur Verfügung gestellten Daten sollen in R in eine Tabelle umgewandelt werden. Um dies umzusetzen erstellt man zuerst zwei Vektoren welche die Werte der Tabelle beinhalten:
+
+```{r}
+col1 = c(20,4)
+col2 = c(3,1)
+```
+
+Aus diesen zwei Vektoren muss nun eine Matrix mit dem Befehl $matrix()$ erstellt werden. Die Dimensionen hierfür sind wie im original 2x2. Um beide Vektoren zusammenzufassen wird der Befehl $cbind()$ verwendet, der beide Spaltenvektoren nebeneinanderlegt:
+
+```{r}
+data = matrix(cbind(col1,col2),nrow=2,ncol=2)
+```
+
+Nun muss die Matrix beschriftet werden. Hierfür werden zuerst die Spalten, dann die Reihen benannt. Zum Schluss werden noch die Variablennamen gesetzt:
+
+```{r}
+colnames(data) = c("ja", "nein")
+rownames(data) = c("ja", "nein")
+names(dimnames(data)) = c("activity", "distance")
+```
+
+Die beschriftete Matrix laut Angabe ist nun fertig. Jetzt muss sie noch in einen Table umgewandelt werden:
+
+```{r}
+tabledata = as.table(data)
+print(tabledata)
+```
+
+## Visualisierung
+
+Die Barplots zeigen, dass es mehr Fitnesstracker gibt, die keine Aktivitätsaufzeichnung besitzen.
+
+```{r}
+sum(tabledata)
+
+addmargins(tabledata)
+
+barplot(rowSums(tabledata), main = "Aktivitätsaufzeichnung")
+
+barplot(colSums(tabledata), main = "Distanzanzeige am Gerät")
+
+```
+
+Zur besseren Visualisierung wird noch ein Kacheldiagramm erstellt. Dafür muss zuerst das 'vcd' package importiert werden, dann anschließend per $tile()$ Befehl das Kacheldiagramm erstellt werden:
+
+```{r}
+library(vcd)
+tiledata = tile(tabledata, main = "Fitnesstracker functionalities")
+```
+
+Das Kacheldiagramm visualisiert deutlich, wie viele Fitnesstracker beide Funktionen besitzen und wie wenige Fitnesstracker keine der genannten Funktionen unterstützen. Für weitere Analysemöglichkeiten kann man den Typ auf "expected" umschalten:
+
+```{r}
+tiledataexp = tile(tabledata, main = "Fitnesstracker functionalities", type = "expected")
+```
+
+Hier werden die einzelnen Wahrscheinlichkeiten miteinander multipliziert um eine Unabhängigkeit feststellen zu können. Auf den ersten Blick sind beide Grafiken ident, allerdings erkennt man beim genaueren hinsehen, dass jene Fitnesstracker, die nur eine Funktion besitzen, leicht angestiegen sind, wohingegen die Anzahl der Geräte ohne solche Funktionen leicht gesunken ist. Da sich die Grafik demnach beinahe insignifikant verändert hat, kann man also leicht annehmen, dass die Daten unabhängig sind.
+
+In der Visualisierung werden sowohl die beobachteten als auch die erwarteten Werte dargestellt, um die Unabhängigkeit zwischen den beiden Funktionen der Fitnesstracker zu überprüfen. Die beobachteten Werte sind die tatsächlichen Häufigkeiten oder Anzahlen von Fitnesstrackern, die sowohl die Distanzanzeige als auch die Aktivitätsaufzeichnung haben ('ja'-'ja'), nur eine der Funktionen haben ('ja'-'nein' oder 'nein'-'ja'), oder keine der Funktionen haben ('nein'-'nein').
+
+Die erwarteten Werte sind die Häufigkeiten, die wir erwarten würden, wenn die beiden Funktionen unabhängig voneinander wären. Diese werden anhand der Randverteilungen berechnet, die sich aus den beobachteten Daten ergeben. Wenn die beiden Funktionen unabhängig sind, können wir erwarten, dass die beobachteten Häufigkeiten in den Zellen des Kacheldiagramms nahe an den erwarteten Werten liegen.
+
+Durch den Vergleich der beobachteten und erwarteten Werte können wir feststellen, ob es Abweichungen von der Unabhängigkeit gibt. Signifikante Abweichungen könnten darauf hindeuten, dass es einen Zusammenhang zwischen den beiden Funktionen gibt. Wenn die beobachteten Werte stark von den erwarteten Werten abweichen, könnte dies darauf hindeuten, dass die beiden Funktionen möglicherweise miteinander verbunden sind und nicht unabhängig voneinander auftreten. Daher ist die Überprüfung der erwarteten Werte neben den beobachteten Werten wichtig, um den Zusammenhang zwischen den Funktionen genauer zu verstehen.
+
+## Forschungsproblem
+
+Welches Forschungsproblem (Unabhängigkeit oder Homogenität) liegt hier vor und warum?
+
+Hier liegt eine Unabhängigkeit vor, da beide Datensätze, also die Funktionen "Distanzanzeige" und "Aktivitätsaufzeichnung", unabhängig voneinander funktionieren können Die Nullhypothese ist also, dass beide Funktionen nicht unabhängig sind. Die Alternativhypothese, oder auch Unabhängigkeitshypothese, sagt aus, dass beide Funktionen unabhängig sind.
+
+Die Entscheidung für das Problem der Unabhängigkeit basiert auf der Annahme, dass die Funktionen der Fitnesstracker - Distanzanzeige und Aktivitätsaufzeichnung - unabhängig voneinander sind. Dies beruht auf der Überlegung, dass die Möglichkeit, die zurückgelegte Distanz anzuzeigen, nicht zwangsläufig mit der Fähigkeit zur Aktivitätsaufzeichnung verbunden ist, und umgekehrt. Zum Beispiel könnten einige Fitnesstracker speziell für Laufen oder Gehen entwickelt worden sein und daher die Distanz anzeigen, während andere sich auf die Aufzeichnung verschiedener Aktivitäten konzentrieren und möglicherweise keine Distanzanzeige haben. Diese unterschiedlichen Designentscheidungen legen nahe, dass die Verfügbarkeit einer Funktion nicht notwendigerweise von der anderen abhängt und unterstützen die Annahme der Unabhängigkeit zwischen den beiden Funktionen.
+
+## Zusammenhang?
+
+Gibt es einen Zusammenhang zwischen der Verfügbarkeit einer Distanzanzeige am Gerät und einer Aktivitätsaufzeichnungsfunktion (0.5%-Signifikanzniveau)?
+
+Um diese Frage zu beantworten wird ein $\chi^2$-Test durchgeführt:
+
+```{r}
+chisq.test(tabledata)
+```
+
+Der p-Wert beträgt genau 1, dies könnte allerdings auch an einer Fehlberechnung vom $\chi^2$-Test liegen. Da der $\chi^2$-Test als "technische" Voraussetzung hat, dass alle Werte zumindest 5 betragen und in der Tabelle Werte unter 5 vorhanden sind, wird zur Sicherheit noch ein $fisher$-Test gemacht:
+
+```{r}
+fisher.test(tabledata)
+```
+
+Wie es aussieht bleibt das Ergebnis unverändert. Selbst der $fisher$-Test gibt einen p-Wert von 1 aus. Damit gelangen man zu der Konklusion, dass es zu 100% keine gleichverteilung gibt. Da das Signifikanzniveau mit 0.005 weit unter dem p-Wert von 1 liegt, was bedeutet, dass die Nullhypothese verworfen wird und die Unabhängigkeitshypothese in diesem Fall herangezogen wird. Die beiden Funktionen des Fitnesstrackers sind also unabhängig.

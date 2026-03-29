@@ -1,0 +1,24 @@
+"modell";"bremsen_trocken";"bremsen_nass"
+"1";"Michelin Energy Saver +";1.5;2.9
+"2";"Avon ZT5";3.3;4.3
+"3";"Bridgestone Turanza T001";1.3;2.3
+"4";"Vredestein Sportrac 5";1.3;2.6
+"5";"Fulda EcoControl HP";1.3;2.4
+"6";"Michelin Energy Saver +";2.5;2.9
+"7";"Apollo Alnac 4 G";1.3;2
+"8";"High Performer Sporth HS3";1.8;3.3
+"9";"Semperit Speed-Life";1.8;3.1
+"10";"Federal Formoza FD2";2.5;5.5
+"11";"Bridgestone Ecopia EP150";1.8;2.3
+"12";"Continental ContiEcoContact 5";2;2.1
+"13";"Kormoran Impulser b2";2.8;4.7
+"14";"Pirelli Cinturato P1 Verde";2;2
+"15";"Barum Brillantis 2";3;2.6
+"16";"Nexen N blue HD";1.5;2.6
+"17";"Yokohama BluEarth AE01D";1.8;3
+"18";"Falken Sincera SN832 Ecorun";2.3;2.4
+"19";"Dunlop Sport bluResponse";1;2.3
+"20";"Nokian Line";1.5;2.3
+"21";"Nokian Line";2;2.5
+"22";"Kumho ecowinG ES01 KH27";1.5;2.6
+"23";"Hankook Kinergy Eco K425";2;2

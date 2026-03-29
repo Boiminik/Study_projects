@@ -1,0 +1,86 @@
+@startuml
+    namespace Workout {
+
+        class BasicWorkout [[BasicWorkout.html]] {
+            #duration: int
+            #intensity: int
+            #energy: int
+            #description: String
+            +BasicWorkout(Date, int)
+            +BasicWorkout(Date, int, int)
+            +BasicWorkout(Date, int, int, int)
+            +BasicWorkout(Date, int, int, int, String)
+            +BasicWorkout(BasicWorkout)
+            +getDescription(): String
+            +getEnergy(): int
+            +getIntensityString(): String
+            +getIntensity(): int
+        }
+
+        class Date [[Date.html]] {
+            -y: int
+            -m: int
+            -d: int
+            +Date(int, int, int)
+            +Date(Date)
+            +Date()
+            +getYear(): int
+            +getDay(): int
+            +getMonth(): int
+            +isLeap(): boolean
+            +weekday(): int
+            +dateString(): String
+            -numberEnding(): String
+            -monthName(int): String
+            -dayName(int): String
+            +addDay(int): void
+            +addMonth(int): void
+            +addYear(int): void
+            {static} +julianDayNumber(int, int, int): int
+            +julianDayNumber(): int
+            {static} +lil2jul(int): int
+            {static} +jul2lil(int): int
+            +lilianDayNumber(): int
+            {static} +lilianDayNumber(int, int, int): int
+            +setJulian(int): void
+            +numericString(): String
+            +compareTo(Date): int
+            +scan(): boolean
+        }
+
+        class Main [[Main.html]] {
+            {static} +main(String[]): void
+            {static} -meanIntensity(BasicWorkout[]): double
+            {static} +totalEnergy(BasicWorkout[]): int
+            {static} +print(BasicWorkout[]): void
+            {static} +getDemoData(): BasicWorkout[]
+        }
+
+        class PushUp [[PushUp.html]] {
+            -repetitions: int
+            +PushUp(Date, int)
+            +getIntensity(): int
+            +getEnergy(): int
+        }
+
+        class Running [[Running.html]] {
+            -distance: int
+            +Running(Date, int, int, String)
+            +getIntensity(): int
+            +getEnergy(): int
+        }
+
+        BasicWorkout --> Date: date
+        java.lang.Comparable <|.. Date
+        BasicWorkout <|-- PushUp
+        BasicWorkout <|-- Running
+    }
+
+    namespace java.lang {
+        interface Comparable<T> {
+            {abstract} +compareTo(T): int
+        }
+    }
+
+    center footer UMLDoclet 2.0.12, PlantUML 1.2020.16
+@enduml

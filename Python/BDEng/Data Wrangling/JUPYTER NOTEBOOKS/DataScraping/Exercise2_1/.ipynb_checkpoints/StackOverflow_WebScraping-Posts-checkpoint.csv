@@ -1,0 +1,194 @@
+,action,action_day,action_month,action_year,action_time,text_body,username,user_ratings
+0,asked,17,Jan,2010,16:06,"Closed. This question is seeking recommendations for software libraries, tutorials, tools, books, or other off-site resources. It does not meet Stack Overflow guidelines. It is not currently accepting answers.
+                                
+                            
+
+
+
+
+
+
+
+
+
+
+
+ We don’t allow questions seeking recommendations for software libraries, tutorials, tools, books, or other off-site resources. You can edit the question so it can be answered with facts and citations.
+
+
+Closed 4 years ago.
+
+
+
+
+
+
+
+                        Improve this question
+                    
+
+
+
+I'd like to grab daily sunrise/sunset times from a web site. Is it possible to scrape web content with Python? what are the modules used? Is there any tutorial available?",eozzy,197
+1,answered,17,Jan,2010,18:08,"Use urllib2 in combination with the brilliant BeautifulSoup library:
+import urllib2
+from BeautifulSoup import BeautifulSoup
+# or if you're using BeautifulSoup4:
+# from bs4 import BeautifulSoup
+
+soup = BeautifulSoup(urllib2.urlopen('http://example.com').read())
+
+for row in soup('table', {'class': 'spad'})[0].tbody('tr'):
+    tds = row('td')
+    print tds[0].string, tds[1].string
+    # will print date and sunrise",user235064,196
+2,answered,22,Dec,2011,11:12,"I'd really recommend Scrapy.
+Quote from a deleted answer:
+
+
+Scrapy crawling is fastest than mechanize because uses asynchronous operations (on top of Twisted).
+Scrapy has better and fastest support for parsing (x)html on top of libxml2.
+Scrapy is a mature framework with full unicode, handles redirections, gzipped responses, odd encodings, integrated http cache, etc.
+Once you are into Scrapy, you can write a spider in less than 5 minutes that download images, creates thumbnails and export the extracted data directly to csv or json.",Sjaak Trekhaak,66
+3,answered,22,Dec,2011,7:46,"I collected together scripts from my web scraping work into this bit-bucket library.
+Example script for your case:
+from webscraping import download, xpath
+D = download.Download()
+
+html = D.get('http://example.com')
+for row in xpath.search(html, '//table[@class=""spad""]/tbody/tr'):
+    cols = xpath.search(row, '/td')
+    print 'Sunrise: %s, Sunset: %s' % (cols[1], cols[2])
+
+Output:
+Sunrise: 08:39, Sunset: 16:08
+Sunrise: 08:39, Sunset: 16:09
+Sunrise: 08:39, Sunset: 16:10
+Sunrise: 08:40, Sunset: 16:10
+Sunrise: 08:40, Sunset: 16:11
+Sunrise: 08:40, Sunset: 16:12
+Sunrise: 08:40, Sunset: 16:13",hoju,18
+4,answered,21,May,2013,4:09,"I would strongly suggest checking out pyquery. It uses jquery-like (aka css-like) syntax which makes things really easy for those coming from that background.
+For your case, it would be something like:
+from pyquery import *
+
+html = PyQuery(url='http://www.example.com/')
+trs = html('table.spad tbody tr')
+
+for tr in trs:
+  tds = tr.getchildren()
+  print tds[1].text, tds[2].text
+
+Output:
+5:16 AM 9:28 PM
+5:15 AM 9:30 PM
+5:13 AM 9:31 PM
+5:12 AM 9:33 PM
+5:11 AM 9:34 PM
+5:10 AM 9:35 PM
+5:09 AM 9:37 PM",scottmrogowski,11
+5,answered,17,Jan,2010,16:13,"You can use urllib2 to make the HTTP requests, and then you'll have web content.
+You can get it like this:
+import urllib2
+response = urllib2.urlopen('http://example.com')
+html = response.read()
+
+Beautiful Soup is a python HTML parser that is supposed to be good for screen scraping.
+In particular, here is their tutorial on parsing an HTML document.
+Good luck!",danben,7
+6,answered,1,Dec,2012,14:40,"I use a combination of Scrapemark (finding urls - py2) and httlib2 (downloading images - py2+3). The scrapemark.py has 500 lines of code, but uses regular expressions, so it may be not so fast, did not test.
+Example for scraping your website:
+
+import sys
+from pprint import pprint
+from scrapemark import scrape
+
+pprint(scrape(""""""
+    <table class=""spad"">
+        <tbody>
+            {*
+                <tr>
+                    <td>{{[].day}}</td>
+                    <td>{{[].sunrise}}</td>
+                    <td>{{[].sunset}}</td>
+                    {# ... #}
+                </tr>
+            *}
+        </tbody>
+    </table>
+"""""", url=sys.argv[1] ))
+
+Usage:
+python2 sunscraper.py http://www.example.com/
+
+Result:
+[{'day': u'1. Dez 2012', 'sunrise': u'08:18', 'sunset': u'16:10'},
+ {'day': u'2. Dez 2012', 'sunrise': u'08:19', 'sunset': u'16:10'},
+ {'day': u'3. Dez 2012', 'sunrise': u'08:21', 'sunset': u'16:09'},
+ {'day': u'4. Dez 2012', 'sunrise': u'08:22', 'sunset': u'16:09'},
+ {'day': u'5. Dez 2012', 'sunrise': u'08:23', 'sunset': u'16:08'},
+ {'day': u'6. Dez 2012', 'sunrise': u'08:25', 'sunset': u'16:08'},
+ {'day': u'7. Dez 2012', 'sunrise': u'08:26', 'sunset': u'16:07'}]",Nils Lindemann,4
+7,answered,8,Feb,2015,13:52,"Make your life easier by using CSS Selectors
+I know I have come late to party but I have a nice suggestion for you.
+Using BeautifulSoup is already been suggested I would rather prefer using CSS Selectors to scrape data inside HTML
+import urllib2
+from bs4 import BeautifulSoup
+
+main_url = ""http://www.example.com""
+
+main_page_html  = tryAgain(main_url)
+main_page_soup = BeautifulSoup(main_page_html)
+
+# Scrape all TDs from TRs inside Table
+for tr in main_page_soup.select(""table.class_of_table""):
+   for td in tr.select(""td#id""):
+       print(td.text)
+       # For acnhors inside TD
+       print(td.select(""a"")[0].text)
+       # Value of Href attribute
+       print(td.select(""a"")[0][""href""])
+
+# This is method that scrape URL and if it doesnt get scraped, waits for 20 seconds and then tries again. (I use it because my internet connection sometimes get disconnects)
+def tryAgain(passed_url):
+    try:
+        page  = requests.get(passed_url,headers = random.choice(header), timeout = timeout_time).text
+        return page
+    except Exception:
+        while 1:
+            print(""Trying again the URL:"")
+            print(passed_url)
+            try:
+                page  = requests.get(passed_url,headers = random.choice(header), timeout = timeout_time).text
+                print(""-------------------------------------"")
+                print(""---- URL was successfully scraped ---"")
+                print(""-------------------------------------"")
+                return page
+            except Exception:
+                time.sleep(20)
+                continue",Umair Ayub,1
+8,answered,30,Apr,2017,15:22,"If we think of getting name of items from any specific category then we can do that by specifying the class name of that category using css selector:
+import requests ; from bs4 import BeautifulSoup
+
+soup = BeautifulSoup(requests.get('https://www.flipkart.com/').text, ""lxml"")
+for link in soup.select('div._2kSfQ4'):
+    print(link.text)
+
+This is the partial search results:
+Puma, USPA, Adidas & moreUp to 70% OffMen's Shoes
+Shirts, T-Shirts...Under ₹599For Men
+Nike, UCB, Adidas & moreUnder ₹999Men's Sandals, Slippers
+Philips & moreStarting ₹99LED Bulbs & Emergency Lights",SIM,1
+9,answered,21,Mar,2017,15:01,"Here is a simple web crawler, i used BeautifulSoup and we will search for all the links(anchors) who's class name is _3NFO0d. I used Flipkar.com, it is an online retailing store.
+import requests
+from bs4 import BeautifulSoup
+def crawl_flipkart():
+    url = 'https://www.flipkart.com/'
+    source_code = requests.get(url)
+    plain_text = source_code.text
+    soup = BeautifulSoup(plain_text, ""lxml"")
+    for link in soup.findAll('a', {'class': '_3NFO0d'}):
+        href = link.get('href')
+        print(href)
+
+crawl_flipkart()",Atul Chavan,0

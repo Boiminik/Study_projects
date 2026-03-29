@@ -1,0 +1,4 @@
+{Person: name=guenther, age=54}
+{Person: name=frederike, age=43}
+{Person: name=maximilian, age=12}
+{Person: name=gertrude, age=65}

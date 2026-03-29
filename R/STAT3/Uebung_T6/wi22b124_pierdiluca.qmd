@@ -1,0 +1,134 @@
+---
+title: "CO2-Ausstoß_Uebung_T6"
+author: "wi22b124"
+format: pdf
+editor: visual
+---
+
+# Ausgangssituation
+
+Gegeben ist ein Datensatz mit 43 verschiedenen Automodellen. Den Automodellen wurde, sofern möglich, jeweils der Kraftstoffverbrauch (in l/100km), der Hubraum und der CO2-Ausstoß im Datensatz beigefügt.
+
+## Datenmanagement
+
+Die Daten werden von der Datei in einen Table eingelesen und dargestellt:
+
+```{r}
+dataraw = read.table("./wi22b124.txt", sep="|")
+print(dataraw)
+```
+
+Man erkennt, dass in den Datensätzen einige Daten fehlen, diese wurden mit `NA` gekennzeichnet. Diese Datensätze werden wie folgt entfernt und anschließend wird der neue Table dargestellt:
+
+```{r}
+any(is.na(dataraw))
+summary(dataraw)
+cc = complete.cases(dataraw)
+subdata = subset(dataraw, cc)
+summary(subdata)
+print(subdata)
+```
+
+## Visualisierung
+
+Nun gilt es eine Grafik zur besseren Darstellung zu erstellen. Hierbei wurde ein Pairs-Plot gewählt. Des weiteren wird die Korrelationsmatrix zur Veranschaulichung der Korrelation der Datensätze erstellt:
+
+```{r}
+data_panel = function(x, y) {
+points(x, y)
+abline(lm(y ~ x), col = "red")
+}
+pairs(subdata[,-1], panel = data_panel)
+round(cor(subdata[,-1]),2)
+```
+
+Man erkennt, dass alle Graphen die mit der Kategorie "test" Zusammenhängen, also mit dem Treibstoffverbrauch, einen starken Ausreißer beinhalten. Dies beeinflusst auch die Werte in der Korrelationsmatrix. Diesen Ausreißer gilt es nun ausfindig zu machen und aus weiteren darstellungen auszuschließen um eine bessere Übersicht zu gestalten.
+---
+Es gilt zu empfehlen diesen Ausreißer zu entfernen, da er starken Einfluss auf jegliche Daten nimmt, die im Zusammenhang mit dem Kraftstoffverbrauch liegen. Man erkennt, dass alle anderen Datensätze durch den Ausreißer so insignifikant geworden sind, dass sie kaum noch von einander unterscheidbar sind. Des weiteren gilt zu erwähnen, dass wir hier einen Ausreißer in der Kategorie Kraftstoffverbrauch haben. Da der durchschnitt der Werte (in summary erkennbar) etwa bei 6.7 liegt, ist ein Ausreißer von 51 stark übertrieben. Der Treibstoffverbrauch von 51l/100km ist auch unrealistisch hoch und existiert so wahrscheinlich nicht einmal in modernen Kraftfahrzeugen (vielleicht in Flugzeugen). Demnach ist anzunehmen dass dieser Datensatz womöglich ein Fehler war, stattdessen sollte hier vielleicht 5.1 stehen statt 51, da wir das aber nicht eindeutig sagen können, sollte dieser entfernt werden.
+
+```{r}
+summary(subdata[, -1])
+which(subdata$test>10)
+subdata <- subset(subdata, subdata$test<10)
+summary(subdata)
+```
+
+Mit diesem Codeblock schließen wir jene Daten aus den künftigen Datensätzen aus, die in der Kategorie "test" über dem Wert von `10` liegen. Nachdem nun extreme Ausreißer ausgeschlossen wurden, können die Grafiken für die Analyse erneut dargestellt werden:
+
+## Zusammenhang?
+
+```{r}
+data_panel = function(x, y) {
+points(x, y)
+abline(lm(y ~ x), col = "red")
+}
+pairs(subdata[,-1], panel = data_panel)
+```
+
+Nun sind die Datensätze um einiges übersichtlicher. Anhand der Regressionslinie erkennt man den positiven Zusammenhang einiger Datensätze.Auffällig sind hier die Grafiken rechts oben: CO2 in Abhängigkeit von Treibstoffverbrauch, rechts mittig: CO2 in Abhängigkeit von Hubraum und links unten: Test in Abhängigkeit von CO2. Somit kann auf einen starken kausalen Zusammenhang zwischen Test und CO2 geschlossen werden. Des weiteren lässt sich auch ein zwar schwächerer, aber dennoch bestehender kausaler Zusammenhang zwischen Hubraum und CO2 feststellen.
+
+```{r}
+round(cor(subdata[,-1]),2)
+```
+
+An der neuen Korrelationsmatrix erkennt man wie stark der Ausreißer die Korrelationsdaten beeinflusst hat. Sowohl zwischen Test und Hubraum als auch zwischen Hubraum und CO2 kann man keine Korrelation feststellen. Jedoch existiert eine geringe positive Korrelation zwischen Test und CO2.
+
+```{r}
+model = lm(co2~test + hubraum, data=subdata)
+summary(model)
+```
+
+Das Sternensymbol rechts neben dem Test-Datensatz sagt aus, dass sich bei den Daten eine mäßige Signifikanz finden lässt.
+
+## Prädikatorenwahl
+
+Es gilt nun zu überprüfen, welche Prädikatoren unseres Datensatz für weitergehende Berechnungen sinnvoll sind. Hierfür wird die `step`-Funktion verwendet, welche dann anschließen mit der `summary`-Funktion überichtlich dargestellt wird.
+
+```{r}
+modelneu = step(model)
+summary(modelneu)
+```
+
+Beide Prädikatoren sollten im Modell verbleiben da laut `step`-Funktion der AIC am Niedrigsten ist, wenn beide Tabellen bestehen. Allerdings wäre es wichtig zu erwähnen, dass der AIC-Wert vom Hubraum nur 0.03 höher ist als der niedrig möglichste.
+
+## Regressionsgleichung
+
+Anahnd der Zusammenfassung der Daten kann die Gleichungen für einen erwarteten *CO2* Ausstoß herausgelesen werden: $$ E(CO2|Verbrauch) = 21.033081 + 14.341409 * Test + 0.010346 * Hubraum $$ Diese Theorie kann nun anhand eines Beispieldatensatzes berechnet werden. Hierfür wird das Auto $Hyundai i30 1 6 CRDi$ als Beispiel herangezogen.
+
+```{r}
+which(subdata$modell=="Hyundai i30 1 6 CRDi")
+```
+
+Unter dem gesuchten Modell konnten zwei Datensätze gefunden werden. Die Berechnung wird für beide durchgeführt:
+
+```{r}
+print('Erstes Modell:')
+print('-------------------------------------')
+print('Berechnung:')
+21.033081 + 14.341409 * subdata[which(subdata$modell=="Hyundai i30 1 6 CRDi")[1],"test"] + 0.010346 * subdata[which(subdata$modell=="Hyundai i30 1 6 CRDi")[1],"hubraum"]
+print('Soll:')
+subdata[which(subdata$modell=="Hyundai i30 1 6 CRDi")[1],"co2"]
+print('Zweites Modell:')
+print('-------------------------------------')
+print('Berechnung:')
+21.033081 + 14.341409 * subdata[which(subdata$modell=="Hyundai i30 1 6 CRDi")[2],"test"] + 0.010346 * subdata[which(subdata$modell=="Hyundai i30 1 6 CRDi")[2],"hubraum"]
+print('Soll:')
+subdata[which(subdata$modell=="Hyundai i30 1 6 CRDi")[2],"co2"]
+```
+
+Beim ersten Modell spiegelt sich die akkurate Formel wider, der berechnete Wert liegt um etwa 2,35% über dem eigentlichen Wert. Beim zweiten Modell hingegen befindet sich der berechnete Wert um etwa 8,99% über dem eigentlichen Wert. Beim genaueren betrachten erkennt man allerdings, dass die Werte vom zweiten Modell und ersten Modell beinahe ident sind, lediglich der Kraftstoffverbrauch ist um 0,5 höher. Daher ist das zweite Modell wohl ein fehlerhafter Datensatz, so wird nur das erste herangezogen, wodurch bestimmt werden kann, dass die Regressionsgleichung halbwegs akkurat ist.
+
+## Modelldiagnostik
+
+```{r}
+qqnorm(residuals(modelneu))
+qqline(residuals(modelneu))
+```
+
+Anhand des Q-Q Plots ist eine starke Korrelation der Residuen erkennbar, da sich, bis auf ein paar kleine Ausreißer, alle Punkte auf einer Geraden befinden.
+
+```{r}
+plot(residuals(modelneu) ~ fitted(modelneu))
+```
+
+In dem Streudiagramm der Residuen sind keine auffälligen Strukturen zu erkennen.

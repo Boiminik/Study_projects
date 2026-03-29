@@ -1,0 +1,139 @@
+---
+title: "T3_wi22b124_Kreditkartenbetrug"
+author: "wi22b124"
+format: pdf
+editor: visual
+---
+
+## Ausgangssituation
+
+Für Kreditkartenfirmen ist es wichtig zu wissen, welche Transaktionen betrügerisch sind, damit die Karten ihrer Kund*innen nicht für Dinge belastet werden, die diese gar nicht gekauft haben. Der Datensatz enthält 207 Transaktionen mit Kreditkarten, die von anonymisierten Karteninhaber*innen durchgeführt wurden. Angegeben sind die Höhe der Transaktion in EUR (Transaktionswert) und die Anzahl der abgelehnten Transaktionen, wobei sich letztere Variable nicht auf die KundInnen, sondern auf HändlerInnen bezieht (= Wie viele Anfragen auf Abbuchung einer gewissen Summe, die von dieser/diesem HändlerIn an die Kreditkartenfirma übermittelt wurden, werden durchschnittlich pro Tag abgelehnt?).
+
+## Datenmanagement
+
+Die Daten werden mit `read.table()` eingelesen:
+
+```{r}
+credit <- read.table("./wi22b124.txt", sep="|", head=TRUE, stringsAsFactors = TRUE)
+summary(credit)
+```
+
+In dem Datensatz befinden sich einige NAs, diese gilt es zu entfernen:
+
+```{r}
+any(is.na(credit))
+cc = complete.cases(credit)
+subcredit = subset(credit, cc)
+summary(subcredit)
+```
+
+## Visualisierung
+
+### Abhängigkeit: Ablehnung
+
+Erst erstellen wir ein Spineplot wo die Betrugsfälle in Abhängigkeit mit dem Ablehnungen der Händler pro Tag:
+
+```{r}
+spineplot(betrug ~ ablehnung, data = subcredit, ylevels = c("Ja", "Nein"))
+```
+
+In dem Spineplot erkennt man, dass ein sehr großer Datensatz keine Ablehnungen pro Tag beinhaltet und diese auch nicht als Betrug gewertet werden. Es ist zudem gut erkennbar, dass je höher die Durchschnittsablehnungen pro Tag von den Händlern ist, desto höher ist auch die Anzahl an Betrugserkennungen, was sich sehr gut durch Logik erklären lässt. Man erkennt zudem, dass obwohl die Quote an Betrugserkennungen bei 1 und 4 Ablehnungen steigt, aber wieder sinkt bei 2,3,5 und 6. Dies wiederspricht zwar wieder der Logik, jedoch erkennt man auch, dass eben diese Balken schmäler sind, als 1 und 4. Das bedeutet, dass sich in diesen Balken weniger Datensätze befinden und diese demnach vermutlich nicht genug Informationen abliefern können um aussagekräftig genug zu sein.
+
+### Abhängigkeit: Wert
+
+Nun erstellen wir einen Spineplot mit der Abhängigkeit zum Transaktionswert:
+
+```{r}
+spineplot(betrug ~ wert, data = subcredit, ylevels = c("Ja", "Nein"))
+```
+
+Hier erkennt man erneut ein leichtes Muster. Je höher der Wert der Transaktionen ist, desto höher ist die Betrugserkennungsrate. Dieses Muster ist jedoch nicht besonders eindeutig, da Transaktionen mit einem Wert von 2.000 - 4.000 EUR eine geringere Betrugsquote haben, als Transaktionen von 0 - 2.000 EUR. Hier ist jedoch auch wieder der Abfall der Breite der einzelnen Spalten zu erwähnen. Trotz allem ist erkennbar, dass sich viele Betrüge bei hohen Transaktionssummen feststellen ließen. Dennoch lässt sich beim ersten Graphen, der die Abhängigkeit von Betrugsfällen zu Ablehnung pro Tag darstellt, ein deutlich erkennbarer Trend feststellen.
+
+### Abhängigkeit: Gemeinsamer Einfluss
+
+Nun wollen wir noch einen Blick auf den gemeinsamen Einfluss der Variablen auf die Betrugsfälle werfen:
+
+```{r}
+plot(ablehnung ~ wert, data = subcredit, col = betrug,
+main = "Schwere von Betrugsfällen in Abhängigkeit von\nAnzahl an Ablehnungen und Transaktionswert",
+sub = "N=21", pch = 16)
+legend("topright", legend = c("Ja", "Nein"), col = 1:2, pch = 16)
+
+```
+
+Hier erkennt man stark, dass sich die meisten Nicht-Betrugsfälle links unten im Graphen befinden. Bedeutet also: dass eine geringe Ablehnungsquote und Transaktionswert auf eine niedrigere Betrugserkennungsrate schließen lassen.
+
+## Klassifikation mit *k*-NN
+
+### Bestimmung von *k*
+
+Wir wollen nun für den gegebenen Datensatz jenes 𝑘 finden, für das der *k*-NN-Klassifikator die beste Performance liefert. Um ein möglichst stabiles Ergebnis zu erhalten, bestimmen wir das optimale *k* mittels Kreuzvalidierung und führen diese wiederholt durch - insgesamt 20 Mal. Für jeden Durchlauf speichern wir das gefundene *k* in einem Vektor und zählen die Werte dann aus. Wir erhalten:
+
+```{r}
+library(e1071)
+set.seed(1)
+best.k <- replicate(20, tune.gknn(betrug ~ ablehnung + wert,
+data = subcredit, k = 1:5)$best.parameters$k)
+table(best.k)
+```
+
+Scheinbar ergibt sich in 16 von 20 Fällen *k* = 5 die beste Performance, dies kann jedoch darauf hindeuten, dass unsere Spannweite für *k* zu niedrig ist. Wir werden sie demnach von 1 - 5 auf 1 - 10 erhöhen:
+
+```{r}
+set.seed(1)
+best.k <- replicate(20, tune.gknn(betrug ~ ablehnung + wert,
+data = subcredit, k = 1:10)$best.parameters$k)
+table(best.k)
+```
+
+Scheinbar liegen in dieser Evaluierung der *k*-Wert von 5 und 7 Performancetechnisch sehr nahe beieinander. Ich nehme an, wir erhalten detailiertere Ergebnisse wenn wir die Durchlaufanzahl erhöhen, also werden wir insgesamt 30-mal durchlaufen:
+
+```{r}
+set.seed(1)
+best.k <- replicate(30, tune.gknn(betrug ~ ablehnung + wert,
+data = subcredit, k = 1:10)$best.parameters$k)
+table(best.k)
+```
+
+Hier ist das Ergebnis schon mehr eindeutig: in 12 von 30 Durchläufen (knapp die Hälfte) liefert ein *k* von 7 die beste Performance. Dieses Modell wird daher auch für die Klassifikation der neuen Beobachtung herangezogen.
+
+### Modellperformance
+
+Um die Qualität des verwendeten 7-NN-Modells genauer einschätzen zu können, teilen wir die Stichprobe in einen Trainings- und einen Testdatensatz auf und schauen uns dann Confusion Matrix sowie daraus abgeleitete Statistiken an:
+
+```{r}
+library(caret)
+set.seed(4)
+n <- nrow(subcredit)
+testind <- sort(sample(nrow(subcredit), size = trunc(n * 1/3)))
+knn.mod <- gknn(betrug ~ ablehnung + wert,
+data = subcredit[-testind, ], k = 1)
+knn.pre <- predict(knn.mod, subcredit[testind, ])
+confusionMatrix(knn.pre, ref = subcredit$betrug[testind],
+mode = "prec_recall")
+```
+
+-   Accuracy: Genau 80% der Beobachtungen (4 von 5 im Testdatensatz) wurden korrekt klassifiziert, wir erhalten also einen Klassifikationsfehler von etwa 20%. Die Treffergenauigkeit ist um 6,67% niedriger als die Nicht Informationsrate, und der p-Wert für den entsprechenden Acc \> NIR-Test ist somit sehr hoch. Betrachten wir den Konfidenzintervall, so sehen wir, dass die Schätzung für die Accuracy gut sind, da sie sich in einer Spanne von etwa 20% befinden, was bedeutet: Der wahre Wert kann irgendwo im Bereich von 67,67% bis 89,22% erwartet werden, der Klassifikationsfehler liegt somit in Wirklichkeit zwischen etwa 11% und 33%. Wir können diese Genauigkeit der hohen Datensatzanazahl verdanken, welche uns, wie auch schon vorher, mitteilt, dass eine relativ genaue Vorhersage durch die gegebenen Variablen möglich ist.
+-   Recall: Von der 'Positive' Class (den festgestellten Betrugsfällen) wurden insgesamt 37,50% (3 von 8) korrekt klassifiziert.
+-   Precision: Von 10 angenommenen Betrugsfällen sind nur 3 tatsächlich Betrugsfälle, die Precision liegt daher bei 30%
+-   F1: Auch F1 ist sehr niedrig mit 33,33%.
+
+Diese Genauigkeit ist viel zu gering um verlässliche Vorhersagen feststellen zu können. Die Ungenauigkeit der Daten in Abhängigkeit mit den festgestellten Betrugsfällen rührt womöglich daher, dass vergleichsweise wenig Fälle mit festgestellten Betrugsfällen im Datensatz vorhanden sind. Die Stichprobengröße ist demnach zu klein um eine gute Genauigkeit festzustellen. Ich nehme daher an, dass bei der Abhängigkeit zu nicht festgestellten Betrugsfällen die Genauigkeit besser ausfällt:
+
+```{r}
+confusionMatrix(knn.pre, ref = subcredit$betrug[testind],
+mode = "prec_recall", positive = "Nein")
+```
+
+Man erkennt, dass alle Genauigkeitswerte drastisch angestiegen sind, sobald man es in Abhängigkeit mit dem Faktor "Nein" betrachtet. Dies sagt uns, dass es sich mit einer deutlich besseren Genauigkeit vorhersagen lässt, welche Transaktionen als Nicht-Betrug eingestuft werden, als Transaktionen welche als Betrug eingestuft werden. In 9 von 10 Fällen sind vermutete Nicht-Betruge auch wirkliche Nicht-Betruge. 86,54% von Nicht-Betrugen werden korrekt klassifiziert und auch F1 ist mit 88,24% sehr akkurat. Demnach sind Nicht-Betrugsfälle verlässlich vorhersehbar.
+
+### Klassifikation der neuen Beobachtung
+
+Wir verwenden unser 7-NN-Modell nun zur Klassifikation der neuen Beobachtung: Es kommt eine neue Transaktion eines Kunden durch: der Kunde möchte angeblich 3,650 € bei einem Kunden zahlen, welcher eine Ablehnungsquote von 5 hat, soll diese Transaktion als Betrug eingestuft werden oder nicht? Wir erzeugen einen entsprechenden Data Frame newdata, den wir dann der predict()-Funktion übergeben, um die Vorhersage durchzuführen:
+
+```{r}
+newdata <- data.frame(ablehnung = 5, wert = 3650)
+predict(knn.mod, newdata)
+```
+
+Die neue eingehende Transaktion soll nicht als Betrug gewertet werden.

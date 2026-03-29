@@ -1,0 +1,22 @@
+@startuml
+
+!theme plain
+top to bottom direction
+skinparam linetype ortho
+
+class entities.Rectangle {
+  - width: int
+  - rotation: double
+  - posX: int
+  + rotate(double): void
+   width: int
+   rotation: double
+   area: int
+   posX: int
+}
+class apps.RectangleDemo {
+  + main(String[]): void
+}
+
+apps.RectangleDemo  -[#595959,dashed]->  entities.Rectangle     : "«create»"
+@enduml

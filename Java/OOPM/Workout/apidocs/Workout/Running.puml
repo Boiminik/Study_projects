@@ -1,0 +1,18 @@
+@startuml
+    set namespaceSeparator none
+    hide empty fields
+    hide empty methods
+
+    class "<size:14>Running\n<size:10>Workout" as Workout.Running [[Running.html]] {
+        -distance: int
+        +Running(Date, int, int, String)
+        +getIntensity(): int
+        +getEnergy(): int
+    }
+
+    class "<size:14>BasicWorkout\n<size:10>Workout" as Workout.BasicWorkout [[BasicWorkout.html]]
+
+    Workout.BasicWorkout <|-- Workout.Running
+
+    center footer UMLDoclet 2.0.12, PlantUML 1.2020.16
+@enduml

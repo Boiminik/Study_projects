@@ -1,0 +1,44 @@
+"modell"|"test"|"hubraum"|"co2"
+"1"|"Hyundai i10 1 1"|5.9|1086|119
+"2"|"Toyota Prius Plugin Hybrid*3"|4|1798|NA
+"3"|"Mercedes B 180 CDI"|5.5|1796|114
+"4"|"Hyundai i10 1 2"|5.6|1248|108
+"5"|"Mini SD Countryman All4"|5.9|1995|130
+"6"|"Honda Civic 2 2 iDTEC"|5.8|2199|110
+"7"|"Skoda Octavia Combi 2 0 TDI"|5|1968|129
+"8"|"VW Polo BlueGT"|6.1|1395|107
+"9"|"Audi Q3 2 0 TDI"|5.9|1968|137
+"10"|"Toyota VersoS 1 4 D4D"|5.1|1364|135
+"11"|"Mercedes A 200 CDI BlueEFFICIENCY"|5.8|1796|NA
+"12"|"Mazda CX5 2 2 SkyaktivD"|NA|2191|119
+"13"|"VW Passat 2 0 TDI BMT"|5.7|1968|127
+"14"|"Ford BMax 1 6 TDCi"|5.8|1560|154
+"15"|"Skoda Roomster 1 6 TDI"|NA|1598|146
+"16"|"Skoda Octavia 1 6 TDI"|5.3|1598|99
+"17"|"Kia Venga 1 4 CRDi"|5.1|1396|135
+"18"|"BMW 114i"|5.9|1598|132
+"19"|"Toyota Auris 2 0 D4D"|5.7|1998|112
+"20"|"Seat Leon 2 0 TDI ecomotive"|5.5|1968|146
+"21"|"BMW 118d"|5.4|1995|116
+"22"|"Hyundai i30 1 6 CRDi"|5.1|1582|108
+"23"|"Hyundai i30 1 6 CRDi"|5.6|1582|108
+"24"|"Opel Astra Sports Tourer 1 7 CDTI ecoFLEX"|5.9|1686|114
+"25"|"Mitsubishi ASX 1 8 DID 2WD"|NA|1798|145
+"26"|"BMW 318d"|5.1|1995|118
+"27"|"Mini Cooper SD Clubman"|5.6|NA|115
+"28"|"Chevrolet Cruze Station Wagon 1 7 TD"|6|1686|119
+"29"|"BMW 320d"|5.9|1995|118
+"30"|"Honda Civic 1 6 iDTEC"|5|1597|94
+"31"|"Toyota Prius"|4.9|1798|89
+"32"|"Toyota Yaris Hybrid"|51|1497|79
+"33"|"Kia cee'd SW 1 6 CRDi ECOdynamics"|5.8|1582|116
+"34"|"Kia Rio 1 1 CRDi"|5.1|1120|99
+"35"|"Mini Cooper SD Coupé"|5.5|1995|114
+"36"|"Citroën C4 HDi 150"|5.7|1997|130
+"37"|"Opel Astra 1 7 CDTI ecoFLEX"|5.5|1686|110
+"38"|"VW Up 1 0"|5.9|999|105
+"39"|"Renault Scénic Energy dCi 110"|NA|1461|105
+"40"|"Nissan Qashqai 4x4 1 6 dCi"|5.9|1598|135
+"41"|"VW Up 1 0"|5.2|999|108
+"42"|"VW Touran 1 6 TDI BMT"|5.5|1598|121
+"43"|"VW Polo BlueMotion"|4.2|1299|87
