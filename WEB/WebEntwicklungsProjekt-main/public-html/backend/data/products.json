@@ -1,0 +1,103 @@
+[
+  {
+    "art_num": 1,
+    "name": "T-Red",
+    "gender":"Men,Women,Unisex",
+    "price": 19.99,
+    "size":"S,M,L,XL,XXL",
+    "color": "Red",
+    "category":"Tshirt",
+    "image_url": "../../backend/data/pictures/products/art1.png"
+  },
+  {
+    "art_num": 2,
+    "name": "Leathermen",
+    "gender":"Men",
+    "price": 79.99,
+    "size":"M,L,XL,XXL",
+    "color": "Brown",
+    "category":"Jacket",
+    "image_url": "../../backend/data/pictures/products/art2.png"
+  },
+  {
+    "art_num": 3,
+    "name": "VVS Band",
+    "gender":"Men,Women,Unisex",
+    "price": 29.99,
+    "size":"S,M,L",
+    "color": "Silver",
+    "category":"Accessories",
+    "image_url": "../../backend/data/pictures/products/art3.png"
+  },
+  {
+    "art_num": 4,
+    "name": "Monkey Basketball shorts mens",
+    "gender":"Men" ,
+    "price": 19.99,
+    "size": "S,M,L,XL,XXL", 
+    "color": "Green,Violet",
+    "category":"Pants",
+    "image_url": "../../backend/data/pictures/products/art4.png"
+  },
+
+  {
+    "art_num": 5,
+    "name": "Zen Socks",
+    "gender":"Men,Women,Unisex",
+    "price": 12.99,
+    "size":"one-size",
+    "color": "Green,Violet,Orange",
+    "category": "Accessories",
+    "image_url": "../../backend/data/pictures/products/art5.png"
+  },
+  {
+    "art_num": 6,
+    "name": "Monkeys Polo",
+    "gender":"Men",
+    "price": 21.99,
+    "size":"S,M,L,XL,XXL",
+    "color": "Orange,Black",
+    "category":"Tshirt",
+    "image_url": "../../backend/data/pictures/products/art6.png"
+  },
+  {
+    "art_num": 7,
+    "name": "T-Shirt Striped",
+    "gender":"Men,Women,Unisex",
+    "price": 39.99,
+    "size":"S,M,L,XL,XXL",
+    "color": "Black,White",
+    "category":"Tshirt",
+    "image_url": "../../backend/data/pictures/products/art7.png"
+  },
+   {
+    "art_num": 8,
+    "name": "Baggy Jeans",
+    "gender":"Men",
+    "price": 79.99,
+    "size":"M,L,XL,XXL",
+    "color": "Blue",
+    "category":"Pants",
+    "image_url": "../../backend/data/pictures/products/art8.png"
+  },
+   {
+    "art_num": 9,
+    "name": "Hoodie with Print",
+    "gender":"Men,Women,Unisex",
+    "price": 99.99,
+    "size":"L,XL,XXL,3XL",
+    "color": "Black,Gray,Blue",
+    "category":"Hoodie",
+    "image_url": "../../backend/data/pictures/products/art9.png"
+  },
+   {
+    "art_num": 10,
+    "name": "The 007",
+    "gender":"Men",
+    "price": 239.99,
+    "size":"M,L,XL",
+    "color": "Black,White,Blue",
+    "category":"Suit",
+    "image_url": "../../backend/data/pictures/products/art10.png"
+  }
+]

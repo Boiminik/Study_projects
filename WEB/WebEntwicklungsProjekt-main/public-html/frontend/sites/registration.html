@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="../js/formScript.js"></script>
+    <script src="../js/incScript.js"></script>
+    <link rel="stylesheet" href="../style/formStyle.css">
+</head>
+<body>
+
+    <!-- Include the header -->
+<div id="header-container"></div>
+
+<form id="registrationForm">
+    <h2 class="mb-4">Register</h2>
+    <div class="form-group">
+        <label for="firstName">First Name</label>
+        <input type="text" class="form-control" id="firstName" placeholder="First Name" required>
+    </div>
+    <div class="form-group">
+        <label for="lastName">Last Name</label>
+        <input type="text" class="form-control" id="lastName" placeholder="Last Name" required>
+    </div>
+    <div class="form-group">
+        <label for="address">Adress</label>
+        <input type="text" class="form-control" id="address" placeholder="e.g. Hochstädtplatz 6" required>
+    </div>
+    <div class="form-group">
+        <label for="city">City</label>
+        <input type="text" class="form-control" id="city" placeholder="e.g. Vienna" required>
+    </div>
+    <div class="form-row">
+        <div class="form-group col-md-6">
+            <label for="postcode">Postalcode</label>
+            <input type="text" class="form-control" id="postcode" placeholder="e.g. 1200" required>
+        </div>
+        <div class="form-group col-md-6">
+            <label for="country">Country</label>
+            <select class="form-control" id="country" required>
+                <option value="">Please choose</option>
+                <option value="AL">Albanien</option>
+                <option value="AT">Österreich</option>
+                <option value="BE">Belgien</option>
+                <option value="BIH">Bosnien & Herzegowina</option>
+                <option value="BG">Bulgarien</option>
+                <option value="BY">Belarus</option>
+                <option value="CH">Schweiz</option>
+                <option value="HR">Kroatien</option>
+                <option value="CY">Zypern</option>
+                <option value="CZ">Tschechische Republik</option>
+                <option value="DK">Dänemark</option>
+                <option value="EE">Estland</option>
+                <option value="FI">Finnland</option>
+                <option value="FR">Frankreich</option>
+                <option value="DE">Deutschland</option>
+                <option value="GR">Griechenland</option>
+                <option value="HU">Ungarn</option>
+                <option value="IE">Irland</option>
+                <option value="IS">Island</option>
+                <option value="IT">Italien</option>
+                <option value="LV">Lettland</option>
+                <option value="LT">Litauen</option>
+                <option value="LU">Luxemburg</option>
+                <option value="MT">Malta</option>
+                <option value="NL">Niederlande</option>
+                <option value="NOR">Norwegen</option>
+                <option value="PL">Polen</option>
+                <option value="PT">Portugal</option>
+                <option value="RO">Rumänien</option>
+                <option value="SRB">Serbien</option>
+                <option value="SK">Slowakei</option>
+                <option value="SI">Slowenien</option>
+                <option value="ES">Spanien</option>
+                <option value="SW">Schweden</option>
+                <option value="UA">Ukraine</option>
+                <option value="UK">Großbritannien</option>
+            </select>
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="email">E-Mail-Adress</label>
+        <input type="email" class="form-control" id="email" placeholder="Email" required>
+    </div>
+    <div class="form-group">
+        <label for="username">Username</label>
+        <input type="text" class="form-control" id="username" placeholder="Username" required>
+    </div>
+    <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" class="form-control" id="password" placeholder="Password" required>
+    </div>
+    <div class="form-group">
+        <label for="password2">Confirm Password</label>
+        <input type="password" class="form-control" id="password2" placeholder="Confirm Password" required>
+    </div>
+    <div class="form-check">
+        <input type="checkbox" class="form-check-input" id="termsCheck" required>
+        <label class="form-check-label" for="termsCheck">I accept the <a href=tos.html>Terms Of Service</a></label>
+    </div>
+    <button type="button" id="btn-register" class="btn btn-primary">Register</button>
+</form>
+</body>
+<footer></footer>
+</html>

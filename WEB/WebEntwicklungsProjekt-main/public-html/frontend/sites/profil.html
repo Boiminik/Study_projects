@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My profile</title>
+    <!-- Bootstrap -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../style/formStyle.css">
+    <link rel="stylesheet" href="../style/mainStyle.css">
+    <!--Script-->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="../js/profil.js"></script>
+    <script src="../js/incScript.js"></script>
+</head>
+
+<body>
+    <!-- Include the header -->
+    <div id="header-container"></div>
+
+    <div id="ordersTable"></div>
+    
+
+    <div id="Meine Rechnungen">
+        <h2>My orders</h2>
+        <button type="button" id="loadReceipts" class="btn btn-success">Load Receipts</button>
+    </div>
+
+    <h2>Profile</h2>
+    <div class="modal-body">
+        <div id="message-container"></div>
+        <div id="profileForm" class="container">
+            <h3 class="container-fluid">Current Data </h3>
+            <table class="table">
+                <tr>
+                    <th>First Name</th>
+                    <td id="firstNameold"></td>
+                </tr>
+                <tr>
+                    <th>Last Name</th>
+                    <td id="lastNameold"></td>
+                </tr>
+                <tr>
+                    <th>Adress</th>
+                    <td id="addressold"></td>
+                </tr>
+                <tr>
+                    <th>Postalcode</th>
+                    <td id="postcodeold"></td>
+                </tr>
+                <tr>
+                    <th>City</th>
+                    <td id="ortold"></td>
+                </tr>
+                <tr>
+                    <th>Country</th>
+                    <td id="landold"></td>
+                </tr>
+                <tr>
+                    <th>E-Mail</th>
+                    <td id="emailold"></td>
+                </tr>
+                <tr>
+                    <th>Username</th>
+                    <td id="usernameold"></td>
+                </tr>
+            </table>
+            <div class="form-group">
+                <label for="firstNamenew">First Name</label>
+                <input type="text" class="form-control" id="firstNamenew">
+            </div>
+            <div class="form-group">
+                <label for="lastNamenew">Last Name</label>
+                <input type="text" class="form-control" id="lastNamenew">
+            </div>
+            <div class="form-group">
+                <label for="addressnew">Adress</label>
+                <input type="text" class="form-control" id="addressnew">
+            </div>
+            <div class="form-group">
+                <label for="postcodenew">Postalcode</label>
+                <input type="text" class="form-control" id="postcodenew">
+            </div>
+            <div class="form-group">
+                <label for="ortnew">City</label>
+                <input type="text" class="form-control" id="ortnew">
+            </div>
+            <div class="form-group">
+                <label for="landnew">Country</label>
+                <input type="text" class="form-control" id="landnew">
+            </div>
+            <div class="form-group">
+                <label for="emailnew">E-Mail</label>
+                <input type="email" class="form-control" id="emailnew" required>
+            </div>
+            <div class="form-group">
+                <label for="usernamenew">Username</label>
+                <input type="text" class="form-control" id="usernamenew">
+            </div>
+            <div class="form-group">
+                <label for="passwordnew">New Password (at least 8 characters)</label>
+                <input type="password" class="form-control" id="passwordnew" required>
+            </div>
+            <div class="form-group">
+                <label for="pw_alt">Old Password (required for changes)</label>
+                <input type="password" class="form-control" id="pw_alt" required>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" id="changeButton" class="btn btn-success">Update profile</button>
+    </div>
+    </div>
+    </div>
+    </div>  
+</body>
+<footer></footer>
+</html>
